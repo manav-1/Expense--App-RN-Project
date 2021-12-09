@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "express-bare-native-project",
+    "slug": "express-bare-native-project",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "express-bare-native-project"
+}

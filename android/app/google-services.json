@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "298744699635",
+    "firebase_url": "https://zomato-app-trial-default-rtdb.firebaseio.com",
+    "project_id": "zomato-app-trial",
+    "storage_bucket": "zomato-app-trial.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298744699635:android:6a4476e5bcd2237c3b7586",
+        "android_client_info": {
+          "package_name": "com.expressbarenativeproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFkK-kx3NJZblYcYP9Y_eem2XbSW4vnSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
