@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { Snackbar, ActivityIndicator, ProgressBar } from 'react-native-paper';
 import * as Yup from 'yup';
 import CustomExpense from '../customComponents/CustomExpense';
+import { Chip } from 'react-native-paper';
 
 const Expenses = ({
   visible,
@@ -60,6 +61,8 @@ const Expenses = ({
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [expensesToShow, setExpensesToShow] = React.useState(expenses);
+  const [values, setValues] = React.useState('array');
 
   const handleNewExpense = async () => {
     setIsLoading(true);
@@ -94,6 +97,57 @@ const Expenses = ({
     <>
       <GradientContainer>
         <PaddedContainer>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              marginBottom: 10
+            }}
+          >
+            <Chip
+              onPress={() => {
+                setValues('array');
+                setExpensesToShow(expenses);
+              }}
+              icon={() => <Ionicons name="wallet-outline" size={15} />}
+            >
+              All
+            </Chip>
+            <Chip
+              onPress={() => {
+                setValues('array');
+                setExpensesToShow(expenses.filter((e) => e.type === 'Debit'));
+              }}
+              icon={() => <Ionicons name="trending-down-outline" size={15} />}
+            >
+              Debit
+            </Chip>
+            <Chip
+              onPress={() => {
+                setValues('array');
+                setExpensesToShow(expenses.filter((e) => e.type === 'Credit'));
+              }}
+              icon={() => <Ionicons name="trending-up-outline" size={15} />}
+            >
+              Credit
+            </Chip>
+            <Chip
+              onPress={() => {
+                const initialValue = {};
+                expenses.forEach((expense) => {
+                  if (!initialValue[expense.way])
+                    initialValue[expense.way] = [];
+                  initialValue[expense.way].push(expense);
+                });
+                setValues('object');
+                setExpensesToShow(initialValue);
+              }}
+              icon={() => <Ionicons name="enter-outline" size={15} />}
+            >
+              Expense Way
+            </Chip>
+          </View>
           {visible ? (
             <View>
               <View
@@ -180,32 +234,71 @@ const Expenses = ({
               </TouchableOpacity>
             </View>
           ) : null}
-
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-around'
-            }}
-          >
-            {!showMore
-              ? expenses
-                  .slice(0, expenses.length > 6 ? 6 : expenses.length)
-                  .map((expense, index) => (
+          {values == 'array' ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-around'
+              }}
+            >
+              {!showMore
+                ? expensesToShow
+                    .slice(
+                      0,
+                      expensesToShow.length > 6 ? 6 : expensesToShow.length
+                    )
+                    .map((expense, index) => (
+                      <CustomExpense
+                        key={index}
+                        expense={expense}
+                        deleteItem={() => deleteExpenses(index)}
+                      />
+                    ))
+                : expensesToShow.map((expense, index) => (
                     <CustomExpense
                       key={index}
                       expense={expense}
                       deleteItem={() => deleteExpenses(index)}
                     />
-                  ))
-              : expenses.map((expense, index) => (
-                  <CustomExpense
-                    key={index}
-                    expense={expense}
-                    deleteItem={() => deleteExpenses(index)}
-                  />
-                ))}
-          </View>
+                  ))}
+            </View>
+          ) : (
+            Object.keys(expensesToShow).map((key) => {
+              return (
+                <>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontFamily: 'karla',
+                      fontSize: 16,
+                      marginBottom: 10
+                    }}
+                  >
+                    {key}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent:
+                        expensesToShow[key].length > 1
+                          ? 'space-around'
+                          : 'flex-start'
+                    }}
+                  >
+                    {expensesToShow[key].map((expense, index) => (
+                      <CustomExpense
+                        key={index}
+                        expense={expense}
+                        deleteItem={() => deleteExpenses(index)}
+                      />
+                    ))}
+                  </View>
+                </>
+              );
+            })
+          )}
           <TouchableOpacity
             style={{
               alignSelf: 'flex-end',

@@ -86,9 +86,7 @@ const HomeTabNavigation = ({ navigation }) => {
   //   }
   // };
   // const extraExpenses = {};
-
-  React.useEffect(async () => {
-    // setUser(firebase.auth().currentUser);
+  const setListener = async () => {
     setUser(auth().currentUser);
     const uid = await AsyncStorage.getItem('expense_user');
     // firebase
@@ -106,6 +104,12 @@ const HomeTabNavigation = ({ navigation }) => {
           setExpenses(expenses);
         }
       });
+  };
+
+  React.useEffect(() => {
+    setListener();
+    // return database.ref(`/expenses/${user.uid}`).off('value');
+    // setUser(firebase.auth().currentUser);
   }, []);
 
   const addExpense = (item) => {
