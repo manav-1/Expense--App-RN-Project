@@ -29,6 +29,7 @@ import {
   IconText
 } from '../customComponents/styledComponents';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 const source = {
   uri: 'https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80'
@@ -108,6 +109,32 @@ const LoginScreen = ({ navigation }) => {
     await AsyncStorage.setItem('expense_user', auth().currentUser.uid);
     navigation.push('HomeNav');
   };
+
+  const handleFacebookLogin = async () => {
+    const result = await LoginManager.logInWithPermissions([
+      'public_profile',
+      'email'
+    ]);
+
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      data.accessToken
+    );
+
+    // Sign-in the user with the credential
+    await auth().signInWithCredential(facebookCredential);
+  };
   return (
     <ImageBackground
       style={StyleSheet.absoluteFill}
@@ -150,7 +177,7 @@ const LoginScreen = ({ navigation }) => {
               <Ionicons name="logo-google" size={45} color="#182e28" />
               <IconText>Google</IconText>
             </Login>
-            <Login>
+            <Login onPress={handleFacebookLogin}>
               <Ionicons name="logo-facebook" size={45} color="#182e28" />
               <IconText>Facebook</IconText>
             </Login>

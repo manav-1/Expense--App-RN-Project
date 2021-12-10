@@ -224,9 +224,7 @@ function InteractiveChart({ data }) {
         }}
         numberOfTicks={7}
         data={priceList}
-        formatLabel={(value, index) =>
-          dateList[value].split(' ')[2] + ' ' + dateList[value].split(' ')[1]
-        }
+        formatLabel={(value, index) => value}
         contentInset={{
           left: apx(40),
           right: apx(90)

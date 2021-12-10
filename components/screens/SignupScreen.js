@@ -1,18 +1,18 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   View,
   ImageBackground,
   StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Snackbar } from "react-native-paper";
+  TouchableOpacity
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Snackbar } from 'react-native-paper';
 // import firebase from '../FirebaseConfig';
-import auth from "@react-native-firebase/auth";
-import * as Yup from "yup";
-import PropTypes from "prop-types";
-import Img from "../../assets/abstract-6.png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import auth from '@react-native-firebase/auth';
+import * as Yup from 'yup';
+import PropTypes from 'prop-types';
+import Img from '../../assets/abstract-6.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Styled Components
 import {
   MainContainer,
@@ -25,53 +25,54 @@ import {
   BgImage,
   SignText,
   RowContainer,
-  IconText,
-} from "../customComponents/styledComponents";
+  IconText
+} from '../customComponents/styledComponents';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const source = {
-  uri: "https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80",
+  uri: 'https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80'
 };
 
 const SignupScreen = ({ navigation }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [snackbarText, setSnackbarText] = React.useState("");
+  const [snackbarText, setSnackbarText] = React.useState('');
 
-  const [email, setEmail] = React.useState("manav81101@gmail.com");
-  const [password, setPassword] = React.useState("abcdef1@");
-  const [name, setName] = React.useState("Manav");
+  const [email, setEmail] = React.useState('manav81101@gmail.com');
+  const [password, setPassword] = React.useState('abcdef1@');
+  const [name, setName] = React.useState('Manav');
 
   React.useEffect(() => {
     (() => {
-      navigation.addListener("beforeRemove", (e) => e.preventDefault());
+      navigation.addListener('beforeRemove', (e) => e.preventDefault());
     })();
   }, []);
   const handleSignup = async () => {
     console.log(email, password);
     const validationSchema = Yup.object({
-      name: Yup.string().required("Name is required"),
-      email: Yup.string().email().required("Please Enter your email"),
+      name: Yup.string().required('Name is required'),
+      email: Yup.string().email().required('Please Enter your email'),
       password: Yup.string()
-        .min(6, "Please Enter more than  6 letters")
+        .min(6, 'Please Enter more than  6 letters')
         .max(25)
-        .required("Please Enter your password"),
+        .required('Please Enter your password')
     });
     validationSchema
       .validate({ email, password, name })
       .then(async (obj) => {
         // firebase
         //   .
-          auth()
+        auth()
           .createUserWithEmailAndPassword(obj.email, obj.password)
           .then(async ({ user }) => {
             setSnackbarVisible(true);
             setSnackbarText(
-              "Sign up successful, Please check email for verification"
+              'Sign up successful, Please check email for verification'
             );
             await user.updateProfile({ displayName: obj.name });
             // firebase.
             auth().currentUser.sendEmailVerification();
-            await AsyncStorage.setItem("expense_user", user.uid);
-            navigation.navigate("Login");
+            await AsyncStorage.setItem('expense_user', user.uid);
+            navigation.navigate('Login');
           })
           .catch((err) => {
             setSnackbarVisible(true);
@@ -84,6 +85,15 @@ const SignupScreen = ({ navigation }) => {
       });
     // firebase.auth().createUserWithEmailAndPassword();
   };
+  const handleGoogleLogin = async () => {
+    const { idToken } = await GoogleSignin.signIn();
+    console.log(idToken);
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    console.log(googleCredential);
+    await auth().signInWithCredential(googleCredential);
+    await AsyncStorage.setItem('expense_user', auth().currentUser.uid);
+    navigation.push('HomeNav');
+  };
   return (
     <ImageBackground
       style={StyleSheet.absoluteFill}
@@ -94,14 +104,14 @@ const SignupScreen = ({ navigation }) => {
         style={[
           StyleSheet.absoluteFill,
           {
-            backgroundColor: "#000D",
-            alignItems: "center",
-            justifyContent: "flex-start",
-          },
+            backgroundColor: '#000D',
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+          }
         ]}
       >
         <BgImage
-          style={{ transform: [{ rotate: "5deg" }, { scale: 1.2 }] }}
+          style={{ transform: [{ rotate: '5deg' }, { scale: 1.2 }] }}
           source={Img}
         />
         <MainContainer>
@@ -128,7 +138,7 @@ const SignupScreen = ({ navigation }) => {
             <ButtonText>Sign Up</ButtonText>
           </Button>
           <LoginContainer>
-            <Login>
+            <Login onPress={handleGoogleLogin}>
               <Ionicons name="logo-google" size={40} color="#e3b1c6" />
               <IconText>Google</IconText>
             </Login>
@@ -139,8 +149,8 @@ const SignupScreen = ({ navigation }) => {
           </LoginContainer>
           <RowContainer>
             <SignText>Already have an account </SignText>
-            <TouchableOpacity onPress={() => navigation.push("Login")}>
-              <SignText style={{ color: "#fff", fontWeight: "700" }}>
+            <TouchableOpacity onPress={() => navigation.push('Login')}>
+              <SignText style={{ color: '#fff', fontWeight: '700' }}>
                 Login
               </SignText>
             </TouchableOpacity>
@@ -150,7 +160,7 @@ const SignupScreen = ({ navigation }) => {
       <Snackbar
         visible={snackbarVisible}
         duration={3000}
-        style={{ backgroundColor: "#78314fCC" }}
+        style={{ backgroundColor: '#78314fCC' }}
         onDismiss={() => setSnackbarVisible(false)}
       >
         {snackbarText}
@@ -160,6 +170,6 @@ const SignupScreen = ({ navigation }) => {
 };
 
 SignupScreen.propTypes = {
-  navigation: PropTypes.object,
+  navigation: PropTypes.object
 };
 export default SignupScreen;

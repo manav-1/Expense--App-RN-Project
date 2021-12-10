@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">express-bare-native-project</string>
+    <string name="facebook_app_id">599241681350081</string>
+    <string name="facebook_client_token">16543fa640d649c5b4852634f25f5202</string>
 </resources>
