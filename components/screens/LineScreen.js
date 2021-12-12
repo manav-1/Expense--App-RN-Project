@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Text as TextSVG } from 'react-native-svg';
 
 const LineScreen = (props) => {
   const values = props.data;
@@ -23,7 +24,7 @@ const LineScreen = (props) => {
         new Date(item)
           .toLocaleString('default', { month: 'long' })
           .split(' ')
-          .slice(0, 3)
+          .slice(1, 3)
           .reverse()
           .join(' ')
       ),
@@ -40,17 +41,17 @@ const LineScreen = (props) => {
     ]
     //legend: ['Expenses'] optional
   };
-  const screenWidth = Dimensions.get('screen').width - 30;
+  const screenWidth = Dimensions.get('screen').width - 20;
   const chartConfig = {
     backgroundGradientFrom: '#e1f8ff',
     backgroundGradientFromOpacity: 0,
     backgroundGradientTo: '#ffc290',
     backgroundGradientToOpacity: 0,
     color: () => `#000`, // optional
-    strokeWidth: 2, // optional
+    strokeWidth: 1.5, // optional
     useShadowColorFromDataset: true, // optional
     propsForBackgroundLines: {
-      strokeWidth: 2, // optional
+      strokeWidth: 1.5, // optional
       strokeDasharray: '' // solid background lines with no dashes
     }
   };
@@ -59,38 +60,42 @@ const LineScreen = (props) => {
       colors={['#e1f8ff', '#ffc290']}
       style={{ borderRadius: 20, height: 220 }}
     >
-      <View>
+      <View
+        style={{
+          height: 220,
+          width: '100%'
+        }}
+      >
+        <Text style={styles.expenseText}>Expense Value</Text>
+        <Text style={styles.dateText}>Dates</Text>
         <LineChart
           style={{
             borderRadius: 10,
             position: 'absolute',
             top: 10,
-            left: -35
+            left: -30
           }}
           data={data}
           width={screenWidth}
-          height={220}
+          height={200}
           fromZero={true}
           withInnerLines={false}
-          // withOuterLines={false}
-          yLabelsOffset={10}
+          bezier
+          xLabelsOffset={-4}
           withHorizontalLabels={false}
           hidePointsAtIndex={[0, data.labels.length - 1]}
-          renderDotContent={({ x, y, indexData }) => {
+          renderDotContent={({ x, y, indexData, index }) => {
             return (
-              <Text
-                key={indexData + x + y}
-                style={{
-                  position: 'absolute',
-                  top: y - 20,
-                  left: x - 5,
-                  fontFamily: 'karla',
-                  fontSize: 12,
-                  color: '#000'
-                }}
+              <TextSVG
+                key={index}
+                x={x + 10}
+                y={y}
+                fill="black"
+                fontSize={12}
+                fontWeight="normal"
               >
-                {indexData.toFixed(1)}
-              </Text>
+                {indexData}₹
+              </TextSVG>
             );
           }}
           chartConfig={chartConfig}
@@ -106,15 +111,20 @@ LineScreen.propTypes = {
   data: PropTypes.object
 };
 
-// import React from 'react';
-// import { View, Text } from 'react-native';
-
-// const LineScreen = () => {
-//   return (
-//     <View>
-//       <Text>Line Screen</Text>
-//     </View>
-//   );
-// };
-
-// export default LineScreen;
+const styles = StyleSheet.create({
+  expenseText: {
+    position: 'absolute',
+    transform: [{ rotate: '-90deg' }],
+    top: '45%',
+    left: '-7%',
+    fontSize: 12,
+    fontFamily: 'poppinsBold'
+  },
+  dateText: {
+    position: 'absolute',
+    top: '92%',
+    left: '48%',
+    fontFamily: 'poppinsBold',
+    fontSize: 12
+  }
+});

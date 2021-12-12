@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     margin: 5,
     marginBottom: 10,
     padding: 30,
-    width: 180,
+    width: 170,
     borderWidth: 1,
     borderColor: '#e1f8ff',
     backgroundColor: '#1e1e2d',
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e1f7ff'
   },
   chipText: {
-    fontSize: 10,
+    fontSize: 9,
     color: '#000'
   },
   deleteButton: {

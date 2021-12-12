@@ -66,6 +66,10 @@ const HomeScreen = ({ expenses, navigation }) => {
             <Title style={styles.money}>
               ₹
               {expenses
+                .filter(
+                  (expense) =>
+                    new Date(expense.date).getMonth() === new Date().getMonth()
+                )
                 .reduce((prev, cur) => {
                   if (cur.type === 'Credit')
                     return Number(prev) + Number(cur.value);
