@@ -2,6 +2,7 @@
   "expo": {
     "name": "express-bare-native-project",
     "slug": "express-bare-native-project",
+    "displayName": "Expense Manager",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
