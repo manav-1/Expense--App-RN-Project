@@ -5,7 +5,6 @@ import { Chip } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 const CustomExpense = ({ expense, deleteItem }) => {
-  // console.log(expense);
   const getWayIcon = (way) => {
     switch (way) {
       case 'Cash':

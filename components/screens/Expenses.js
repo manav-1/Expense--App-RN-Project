@@ -12,6 +12,7 @@ import { Snackbar, ActivityIndicator, ProgressBar } from 'react-native-paper';
 import * as Yup from 'yup';
 import CustomExpense from '../customComponents/CustomExpense';
 import { Chip } from 'react-native-paper';
+import { sample } from 'lodash';
 
 const Expenses = ({
   visible,
@@ -20,43 +21,19 @@ const Expenses = ({
   addExpenses,
   deleteExpenses
 }) => {
+  let sampleValues = {
+    value: ['200', '400', '600', '800', '1000'],
+    description: ['Food', 'Clothes', 'Transport', 'Entertainment', 'Others'],
+    type: ['Credit', 'Debit'],
+    way: ['Cash', 'Card', 'Bank Transfer', 'UPI', 'Cheque', 'Net Banking']
+  };
   const [expense, setExpense] = React.useState({
-    value: '',
-    description: '',
-    type: '',
-    way: '',
+    value: sample(sampleValues.value),
+    description: sample(sampleValues.description),
+    type: sample(sampleValues.type),
+    way: sample(sampleValues.way),
     date: ''
   });
-  // const [expenses, setExpenses] = React.useState([
-  //   {
-  //     value: 212,
-  //     description: 'ssdfsdf',
-  //     type: 'Credit',
-  //     way: 'Bank Transfer',
-  //     date: new Date()
-  //   },
-  //   {
-  //     value: 212,
-  //     description: 'ssdfsdf',
-  //     type: 'Debit',
-  //     way: 'Net Banking',
-  //     date: new Date()
-  //   },
-  //   {
-  //     value: 212,
-  //     description: 'ssdfsdf',
-  //     type: 'Credit',
-  //     way: 'UPI',
-  //     date: new Date()
-  //   },
-  //   {
-  //     value: 212,
-  //     description: 'ssdfsdf',
-  //     type: 'Credit',
-  //     way: 'Cash',
-  //     date: new Date()
-  //   }
-  // ]);
   const [showMore, setShowMore] = React.useState(false);
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState('');
@@ -92,7 +69,6 @@ const Expenses = ({
       });
     setIsLoading(false);
   };
-
   return (
     <>
       <GradientContainer>
@@ -195,6 +171,7 @@ const Expenses = ({
                     dropdownStyle={styles.dropdownStyle}
                     buttonStyle={styles.button}
                     buttonTextStyle={styles.buttonText}
+                    defaultValue={expense.type}
                     onSelect={(selectedItem) =>
                       setExpense({ ...expense, type: selectedItem })
                     }
@@ -218,6 +195,7 @@ const Expenses = ({
                     ]}
                     dropdownStyle={styles.dropdownStyle}
                     buttonStyle={styles.button}
+                    defaultValue={expense.way}
                     buttonTextStyle={styles.buttonText}
                     onSelect={(selectedItem) =>
                       setExpense({ ...expense, way: selectedItem })
@@ -234,12 +212,13 @@ const Expenses = ({
               </TouchableOpacity>
             </View>
           ) : null}
-          {values == 'array' ? (
+          {values == 'array' && expenses.length > 0 ? (
             <View
               style={{
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-                justifyContent: 'space-around'
+                justifyContent:
+                  expensesToShow.length > 1 ? 'space-around' : 'flex-start'
               }}
             >
               {!showMore
@@ -252,50 +231,26 @@ const Expenses = ({
                       <CustomExpense
                         key={index}
                         expense={expense}
-                        deleteItem={() => deleteExpenses(index)}
+                        deleteItem={() => deleteExpenses(expense.index)}
                       />
                     ))
                 : expensesToShow.map((expense, index) => (
                     <CustomExpense
                       key={index}
                       expense={expense}
-                      deleteItem={() => deleteExpenses(index)}
+                      deleteItem={() => deleteExpenses(expense.index)}
                     />
                   ))}
             </View>
           ) : (
-            Object.keys(expensesToShow).map((key) => {
+            Object.keys(expensesToShow).map((key, index) => {
               return (
-                <>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontFamily: 'karla',
-                      fontSize: 16,
-                      marginBottom: 10
-                    }}
-                  >
-                    {key}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      flexWrap: 'wrap',
-                      justifyContent:
-                        expensesToShow[key].length > 1
-                          ? 'space-around'
-                          : 'flex-start'
-                    }}
-                  >
-                    {expensesToShow[key].map((expense, index) => (
-                      <CustomExpense
-                        key={index}
-                        expense={expense}
-                        deleteItem={() => deleteExpenses(index)}
-                      />
-                    ))}
-                  </View>
-                </>
+                <ExpenseAccordion
+                  title={key}
+                  expenses={expensesToShow[key]}
+                  deleteItem={deleteExpenses}
+                  key={index}
+                />
               );
             })
           )}
@@ -306,7 +261,7 @@ const Expenses = ({
             }}
             onPress={() => setShowMore(!showMore)}
           >
-            {expenses.length > 6 ? (
+            {expensesToShow.length > 6 && values === 'array' ? (
               !showMore ? (
                 <Text style={{ fontSize: 18, color: '#fff' }}>
                   Show More &nbsp;
@@ -334,6 +289,46 @@ const Expenses = ({
       </Snackbar>
       <ProgressBar visible={isLoading} indeterminate color="#ccf0fa" />
     </>
+  );
+};
+
+const ExpenseAccordion = ({ title, expenses, deleteExpenses }) => {
+  const [expanded, setExpanded] = React.useState(false);
+  return (
+    <View style={styles.accordionContainer}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => setExpanded(!expanded)}
+        style={styles.accordionButton}
+      >
+        <Text style={styles.accordionTitle}>{title}</Text>
+
+        <Ionicons
+          color="#fff"
+          size={24}
+          name={expanded ? 'chevron-up' : 'chevron-down'}
+        />
+      </TouchableOpacity>
+      {expanded ? (
+        <View
+          style={[
+            styles.accordionExpenseContainer,
+            {
+              justifyContent:
+                expenses.length > 1 ? 'space-around' : 'flex-start'
+            }
+          ]}
+        >
+          {expenses.map((expense, index) => (
+            <CustomExpense
+              key={index}
+              expense={expense}
+              deleteItem={() => deleteExpenses(expense.index)}
+            />
+          ))}
+        </View>
+      ) : null}
+    </View>
   );
 };
 
@@ -387,6 +382,24 @@ const styles = StyleSheet.create({
     borderRadius: 1,
     color: '#ccf0fa',
     marginHorizontal: 10
+  },
+  accordionButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  accordionTitle: {
+    color: '#fff',
+    fontFamily: 'karla',
+    fontSize: 20,
+    marginBottom: 10
+  },
+  accordionExpenseContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  accordionContainer: {
+    marginVertical: 20
   }
 });
 
@@ -398,5 +411,9 @@ Expenses.propTypes = {
   deleteExpenses: PropTypes.func,
   addExpenses: PropTypes.func
 };
-
+ExpenseAccordion.propTypes = {
+  title: PropTypes.string,
+  expenses: PropTypes.array,
+  deleteExpenses: PropTypes.func
+};
 export default Expenses;

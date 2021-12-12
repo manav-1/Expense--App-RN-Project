@@ -47,7 +47,6 @@ const SignupScreen = ({ navigation }) => {
     })();
   }, []);
   const handleSignup = async () => {
-    console.log(email, password);
     const validationSchema = Yup.object({
       name: Yup.string().required('Name is required'),
       email: Yup.string().email().required('Please Enter your email'),
@@ -87,9 +86,7 @@ const SignupScreen = ({ navigation }) => {
   };
   const handleGoogleLogin = async () => {
     const { idToken } = await GoogleSignin.signIn();
-    console.log(idToken);
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    console.log(googleCredential);
     await auth().signInWithCredential(googleCredential);
     await AsyncStorage.setItem('expense_user', auth().currentUser.uid);
     navigation.push('HomeNav');

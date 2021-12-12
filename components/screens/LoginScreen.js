@@ -39,9 +39,8 @@ try {
     webClientId:
       '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com'
   });
-} catch (error) {
-  console.log(error);
-}
+  // eslint-disable-next-line no-empty
+} catch (error) {}
 
 const LoginScreen = ({ navigation }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
@@ -62,7 +61,6 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   const handleLogin = async () => {
-    console.log(email, password);
     const validationSchema = Yup.object({
       email: Yup.string().email().required('Please Enter your email'),
       password: Yup.string()
@@ -102,9 +100,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleGoogleLogin = async () => {
     const { idToken } = await GoogleSignin.signIn();
-    console.log(idToken);
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    console.log(googleCredential);
     await auth().signInWithCredential(googleCredential);
     await AsyncStorage.setItem('expense_user', auth().currentUser.uid);
     navigation.push('HomeNav');

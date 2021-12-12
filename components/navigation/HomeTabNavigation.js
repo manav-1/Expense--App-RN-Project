@@ -18,109 +18,53 @@ const handleLogout = async (navigation) => {
   try {
     await AsyncStorage.removeItem('expense_user');
     navigation.push('Login');
-  } catch (e) {
-    console.log(e);
-  }
+    // eslint-disable-next-line no-empty
+  } catch (e) {}
 };
 
 const HomeTabNavigation = ({ navigation }) => {
   const [visible, setVisible] = React.useState(false);
   const [expenses, setExpenses] = React.useState([]);
   const [user, setUser] = React.useState(null);
-  // const extraExpenses = {
-  //   '-MqSiUXNTg5O8_IPm': {
-  //     date: 'Fri Dec 03 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSiUXNWIQTg5sd8_IPm': {
-  //     date: 'Thu Dec 02 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSiUXsdfIQTg5sd8_IPm': {
-  //     date: 'Thu Dec 09 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSiUXsdasg5sd8_IPm': {
-  //     date: 'Fri Dec 10 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSidfvdvbsd8_IPm': {
-  //     date: 'Sat Dec 04 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSidfvdvbfdg_IPm': {
-  //     date: 'Wed Dec 01 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSidfvdvsdfg_IPm': {
-  //     date: 'Sun Dec 05 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   },
-  //   '-MqSidasdsdfg_IPm': {
-  //     date: 'Mon Dec 06 2021',
-  //     description: 'fxvxc',
-  //     type: 'Credit',
-  //     value: '4564',
-  //     way: 'Net Banking'
-  //   }
-  // };
-  // const extraExpenses = {};
+  const [userId, setUserId] = React.useState(null);
   const setListener = async () => {
     setUser(auth().currentUser);
-    const uid = await AsyncStorage.getItem('expense_user');
-    // firebase
-    //   .
+    const userId = auth().currentUser.uid;
+    setUserId(userId);
     database()
-      .ref(`/expenses/${uid}`)
+      .ref(userId)
+      .child(`/expenses/`)
       .on('value', (data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let expenses = [];
           for (let key in values) {
             values[key]['key'] = key;
+            values[key]['index'] = expenses.length;
             expenses.push(values[key]);
           }
           setExpenses(expenses);
+        } else {
+          setExpenses([]);
         }
       });
   };
 
   React.useEffect(() => {
     setListener();
-    // return database.ref(`/expenses/${user.uid}`).off('value');
+    return () => database.ref(`/${userId}/expenses/`).off('value');
     // setUser(firebase.auth().currentUser);
   }, []);
 
   const addExpense = (item) => {
     // firebase.
-    database().ref(`/expenses/${user.uid}`).push(item);
+    database().ref(`/${user.uid}/expenses/`).push(item);
   };
   const deleteExpense = (index) => {
-    console.log(expenses[index]);
-    // firebase
-    //   .
-    database().ref(`/expenses/${user.uid}/${expenses[index].key}`).remove();
+    database()
+      .ref(`/${user.uid}/expenses/`)
+      .child(expenses[index].key)
+      .remove();
   };
 
   return (
@@ -208,6 +152,7 @@ const HomeTabNavigation = ({ navigation }) => {
       >
         {(props) => (
           <Expenses
+            key={expenses}
             {...props}
             visible={visible}
             setVisible={setVisible}

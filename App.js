@@ -49,7 +49,6 @@ export default function App() {
   React.useEffect(() => {
     (() => {
       Font.loadAsync(customFonts).then(() => {
-        console.log("Font loaded successfully");
         setFontLoaded(true);
       });
     })();
