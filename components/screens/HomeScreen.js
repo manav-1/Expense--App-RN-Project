@@ -9,10 +9,12 @@ import {
 import PropTypes from 'prop-types';
 import CustomExpense from '../customComponents/CustomExpense';
 import LineChartScreen from './LineScreen';
+import Analytics from '../customComponents/Analytics';
 import {
   GradientContainer,
   PaddedContainer,
-  Title
+  Title,
+  CenteredKarlaText
 } from '../customComponents/styledComponents';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -66,10 +68,6 @@ const HomeScreen = ({ expenses, navigation }) => {
             <Title style={styles.money}>
               ₹
               {expenses
-                .filter(
-                  (expense) =>
-                    new Date(expense.date).getMonth() === new Date().getMonth()
-                )
                 .reduce((prev, cur) => {
                   if (cur.type === 'Credit')
                     return Number(prev) + Number(cur.value);
@@ -80,6 +78,38 @@ const HomeScreen = ({ expenses, navigation }) => {
                 .replace(/\d(?=(\d{3})+\.)/g, '$&,')}
             </Title>
           </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginHorizontal: 20
+            }}
+          >
+            <View>
+              <CenteredKarlaText style={{ fontFamily: 'karlaMedium' }}>
+                Credit
+              </CenteredKarlaText>
+              <CenteredKarlaText>
+                {expenses
+                  .filter((expense) => expense.type === 'Credit')
+                  .reduce((prev, cur) => Number(prev) + Number(cur.value), 0)
+                  .toFixed(2)
+                  .replace(/\d(?=(\d{3})+\.)/g, '$&,')}
+              </CenteredKarlaText>
+            </View>
+            <View>
+              <CenteredKarlaText style={{ fontFamily: 'karlaMedium' }}>
+                Debit
+              </CenteredKarlaText>
+              <CenteredKarlaText>
+                {expenses
+                  .filter((expense) => expense.type === 'Debit')
+                  .reduce((prev, cur) => Number(prev) + Number(cur.value), 0)
+                  .toFixed(2)
+                  .replace(/\d(?=(\d{3})+\.)/g, '$&,')}
+              </CenteredKarlaText>
+            </View>
+          </View>
         </LinearGradient>
         <View>
           <Text style={styles.heading}>
@@ -87,6 +117,8 @@ const HomeScreen = ({ expenses, navigation }) => {
           </Text>
           <LineChartScreen data={groupByDates()} />
         </View>
+        <Analytics expenses={expenses} />
+
         <View
           style={{
             flexDirection: 'row',

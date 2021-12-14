@@ -13,10 +13,10 @@ import jetBrainsMonoBold from './assets/fonts/JetBrainsMono-Bold.ttf';
 import notoSans from './assets/fonts/NotoSansMono/NotoSansMono-Regular.ttf';
 import notoSansBold from './assets/fonts/NotoSansMono/NotoSansMono-Bold.ttf';
 import karla from './assets/fonts/Karla-Regular.ttf';
+import karlaMedium from './assets/fonts/Karla-SemiBold.ttf';
 import azeret from './assets/fonts/Azeret_Mono/AzeretMono-Bold.ttf';
 import poppins from './assets/fonts/Poppins-Regular.ttf';
 import poppinsBold from './assets/fonts/Poppins-SemiBold.ttf';
-
 import readex from './assets/fonts/readex/ReadexPro-Regular.ttf';
 import roboto from './assets/fonts/roboto/Roboto-Regular.ttf';
 
@@ -44,7 +44,8 @@ const customFonts = {
   poppins,
   poppinsBold,
   readex,
-  roboto
+  roboto,
+  karlaMedium
 };
 
 export default function App() {

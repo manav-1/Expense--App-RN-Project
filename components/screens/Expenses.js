@@ -1,6 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {
   GradientContainer,
@@ -11,6 +17,7 @@ import PropTypes from 'prop-types';
 import { Snackbar, ActivityIndicator, ProgressBar } from 'react-native-paper';
 import * as Yup from 'yup';
 import CustomExpense from '../customComponents/CustomExpense';
+import ExpenseAccordion from '../customComponents/ExpenseAccordion';
 import { Chip } from 'react-native-paper';
 import { sample } from 'lodash';
 
@@ -38,7 +45,10 @@ const Expenses = ({
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
-  const [expensesToShow, setExpensesToShow] = React.useState(expenses);
+  const [expensesToShow, setExpensesToShow] = React.useState(
+    expenses.sort((a, b) => new Date(a.date) < new Date(b.date))
+  );
+  //sorted by date
   const [values, setValues] = React.useState('array');
 
   const handleNewExpense = async () => {
@@ -73,15 +83,9 @@ const Expenses = ({
     <>
       <GradientContainer>
         <PaddedContainer>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              marginBottom: 10
-            }}
-          >
+          <ScrollView horizontal>
             <Chip
+              style={styles.chip}
               onPress={() => {
                 setValues('array');
                 setExpensesToShow(expenses);
@@ -91,6 +95,7 @@ const Expenses = ({
               All
             </Chip>
             <Chip
+              style={styles.chip}
               onPress={() => {
                 setValues('array');
                 setExpensesToShow(expenses.filter((e) => e.type === 'Debit'));
@@ -100,6 +105,7 @@ const Expenses = ({
               Debit
             </Chip>
             <Chip
+              style={styles.chip}
               onPress={() => {
                 setValues('array');
                 setExpensesToShow(expenses.filter((e) => e.type === 'Credit'));
@@ -109,6 +115,7 @@ const Expenses = ({
               Credit
             </Chip>
             <Chip
+              style={styles.chip}
               onPress={() => {
                 const initialValue = {};
                 expenses.forEach((expense) => {
@@ -123,7 +130,23 @@ const Expenses = ({
             >
               Expense Way
             </Chip>
-          </View>
+            <Chip
+              style={styles.chip}
+              onPress={() => {
+                const initialValue = {};
+                expenses.forEach((expense) => {
+                  if (!initialValue[expense.date])
+                    initialValue[expense.date] = [];
+                  initialValue[expense.date].push(expense);
+                });
+                setValues('object');
+                setExpensesToShow(initialValue);
+              }}
+              icon={() => <Ionicons name="calendar-outline" size={15} />}
+            >
+              Date
+            </Chip>
+          </ScrollView>
           {visible ? (
             <View>
               <View
@@ -292,46 +315,6 @@ const Expenses = ({
   );
 };
 
-const ExpenseAccordion = ({ title, expenses, deleteExpenses }) => {
-  const [expanded, setExpanded] = React.useState(false);
-  return (
-    <View style={styles.accordionContainer}>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => setExpanded(!expanded)}
-        style={styles.accordionButton}
-      >
-        <Text style={styles.accordionTitle}>{title}</Text>
-
-        <Ionicons
-          color="#fff"
-          size={24}
-          name={expanded ? 'chevron-up' : 'chevron-down'}
-        />
-      </TouchableOpacity>
-      {expanded ? (
-        <View
-          style={[
-            styles.accordionExpenseContainer,
-            {
-              justifyContent:
-                expenses.length > 1 ? 'space-around' : 'flex-start'
-            }
-          ]}
-        >
-          {expenses.map((expense, index) => (
-            <CustomExpense
-              key={index}
-              expense={expense}
-              deleteItem={() => deleteExpenses(expense.index)}
-            />
-          ))}
-        </View>
-      ) : null}
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   button: {
     padding: 0,
@@ -400,6 +383,10 @@ const styles = StyleSheet.create({
   },
   accordionContainer: {
     marginVertical: 20
+  },
+  chip: {
+    marginHorizontal: 8,
+    marginBottom: 10
   }
 });
 
@@ -411,9 +398,5 @@ Expenses.propTypes = {
   deleteExpenses: PropTypes.func,
   addExpenses: PropTypes.func
 };
-ExpenseAccordion.propTypes = {
-  title: PropTypes.string,
-  expenses: PropTypes.array,
-  deleteExpenses: PropTypes.func
-};
+
 export default Expenses;

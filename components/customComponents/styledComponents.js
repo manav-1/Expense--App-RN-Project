@@ -138,6 +138,11 @@ const ExpenseInput = styled.TextInput`
   font-size: 16px;
 `;
 
+const CenteredKarlaText = styled.Text`
+  font-family: karla;
+  text-align: center;
+`;
+
 export {
   MainContainer,
   Title,
@@ -153,5 +158,6 @@ export {
   FullContainer,
   GradientContainer,
   PaddedContainer,
-  ExpenseInput
+  ExpenseInput,
+  CenteredKarlaText
 };

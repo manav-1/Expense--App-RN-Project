@@ -6,17 +6,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Text as TextSVG } from 'react-native-svg';
 
 const LineScreen = (props) => {
-  const values = props.data;
-  const dateList = Object.keys(
-    Object.fromEntries(
-      Object.entries(values).sort((a, b) => a[0].localeCompare(b[0]))
-    )
+  const values = Object.entries(props.data).sort(
+    (a, b) => new Date(a[0]) - new Date(b[0])
   );
-  const priceList = Object.values(
-    Object.fromEntries(
-      Object.entries(values).sort((a, b) => a[0].localeCompare(b[0]))
-    )
-  );
+  const dateList = values.map((item) => item[0]);
+  const priceList = values.map((item) => item[1]);
   const data = {
     labels: [
       '',
@@ -39,7 +33,6 @@ const LineScreen = (props) => {
         ]
       }
     ]
-    //legend: ['Expenses'] optional
   };
   const screenWidth = Dimensions.get('screen').width - 20;
   const chartConfig = {
@@ -58,11 +51,11 @@ const LineScreen = (props) => {
   return (
     <LinearGradient
       colors={['#e1f8ff', '#ffc290']}
-      style={{ borderRadius: 20, height: 220 }}
+      style={{ borderRadius: 20, height: 230 }}
     >
       <View
         style={{
-          height: 220,
+          height: 230,
           width: '100%'
         }}
       >
@@ -72,7 +65,7 @@ const LineScreen = (props) => {
           style={{
             borderRadius: 10,
             position: 'absolute',
-            top: 10,
+            top: 20,
             left: -30
           }}
           data={data}
@@ -88,13 +81,13 @@ const LineScreen = (props) => {
             return (
               <TextSVG
                 key={index}
-                x={x + 10}
-                y={y}
+                x={x + 5}
+                y={y - 5}
                 fill="black"
                 fontSize={12}
                 fontWeight="normal"
               >
-                {indexData}₹
+                ₹ {indexData}
               </TextSVG>
             );
           }}

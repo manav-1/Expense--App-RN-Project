@@ -4,12 +4,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import Profile from '../screens/Profile';
 import Expenses from '../screens/Expenses';
-import Analytics from '../screens/Analytics';
+// import Analytics from '../customComponents/Analytics';
 // import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import firebase from "../FirebaseConfig";
+import Notes from '../screens/Notes';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
@@ -100,7 +101,7 @@ const HomeTabNavigation = ({ navigation }) => {
                 onPress={() => handleLogout(navigation)}
                 style={styles.logoutButton}
               >
-                <Ionicons name="log-out-outline" size={30} color="#fff" />
+                <Ionicons name="log-out-outline" size={25} color="#fff" />
               </TouchableOpacity>
             </View>
           ),
@@ -135,9 +136,9 @@ const HomeTabNavigation = ({ navigation }) => {
                 onPress={() => setVisible(!visible)}
               >
                 {!visible ? (
-                  <Ionicons name="add" color="#fff" size={30} />
+                  <Ionicons name="add" color="#fff" size={25} />
                 ) : (
-                  <Ionicons name="close" color="#fff" size={30} />
+                  <Ionicons name="close" color="#fff" size={25} />
                 )}
               </TouchableOpacity>
             </View>
@@ -164,8 +165,8 @@ const HomeTabNavigation = ({ navigation }) => {
       </Tab.Screen>
 
       <Tab.Screen
-        name="Analytics"
-        component={Analytics}
+        name="Notes"
+        component={Notes}
         options={{
           header: ({ route }) => (
             <View
@@ -177,12 +178,14 @@ const HomeTabNavigation = ({ navigation }) => {
           ),
           tabBarIcon: ({ focused, color, size }) =>
             !focused ? (
-              <Ionicons size={size} color={color} name="analytics-outline" />
+              <Ionicons size={size} color={color} name="attach-outline" />
             ) : (
-              <Ionicons size={size} color={color} name="analytics" />
+              <Ionicons size={size} color={color} name="attach" />
             )
         }}
       />
+      {/* {(props) => <Analytics {...props} expenses={expenses} />}
+      <Tab.Screen> */}
       <Tab.Screen
         name="Profile"
         component={Profile}
@@ -225,8 +228,8 @@ const styles = StyleSheet.create({
   logoutButton: {
     marginRight: 10,
     paddingLeft: 5,
-    width: 45,
-    height: 45,
+    width: 40,
+    height: 40,
     borderRadius: 25,
     backgroundColor: '#494c59',
     justifyContent: 'center',
