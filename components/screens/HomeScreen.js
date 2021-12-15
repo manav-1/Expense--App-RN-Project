@@ -18,25 +18,59 @@ import {
 } from '../customComponents/styledComponents';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
 import { groupBy } from 'lodash';
 
-const HomeScreen = ({ expenses, navigation }) => {
+const HomeScreen = ({ navigation }) => {
+  const [expenses, setExpenses] = React.useState([]);
+  const [user, setUser] = React.useState(null);
+
+  const setListener = async () => {
+    setUser(auth().currentUser);
+    const userId = auth().currentUser.uid;
+    database()
+      .ref(userId)
+      .child('/expenses/')
+      .on('value', (data) => {
+        if (data.val()) {
+          let values = { ...data.val() };
+          let expenses = [];
+          for (let key in values) {
+            values[key]['key'] = key;
+            values[key]['index'] = expenses.length;
+            expenses.push(values[key]);
+          }
+          setExpenses(
+            expenses.filter(
+              (item) => new Date(item.date).getMonth() === new Date().getMonth()
+            )
+          );
+        } else {
+          setExpenses([]);
+        }
+      });
+  };
+
+  React.useEffect(() => {
+    setListener();
+  }, []);
   React.useEffect(() => {
     (() => {
       navigation.addListener('beforeRemove', (e) => e.preventDefault());
     })();
   }, []);
   const groupByDates = () => {
-    const groupedByDate = groupBy(expenses, 'date');
+    const groupedByDate = groupBy(
+      expenses.filter((expense) => expense.type === 'Debit'),
+      'date'
+    );
     let obj = {};
     Object.keys(groupedByDate).forEach((key) => {
       obj[key] = Number(
         groupedByDate[key]
-          .reduce((prev, cur) => {
-            if (cur.type === 'Credit') return Number(prev) + Number(cur.value);
-            else if (cur.type === 'Debit')
-              return Number(prev) - Number(cur.value);
-          }, 0)
+          .reduce((prev, cur) => Number(prev) + Number(cur.value), 0)
           .toFixed(2)
       );
     });
@@ -51,7 +85,6 @@ const HomeScreen = ({ expenses, navigation }) => {
     }
     return obj;
   };
-  groupByDates();
 
   return (
     <GradientContainer>

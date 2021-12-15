@@ -20,14 +20,49 @@ import CustomExpense from '../customComponents/CustomExpense';
 import ExpenseAccordion from '../customComponents/ExpenseAccordion';
 import { Chip } from 'react-native-paper';
 import { sample } from 'lodash';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
-const Expenses = ({
-  visible,
-  setVisible,
-  expenses,
-  addExpenses,
-  deleteExpenses
-}) => {
+const Expenses = ({ visible, setVisible }) => {
+  const [expenses, setExpenses] = React.useState([]);
+  const [user, setUser] = React.useState(null);
+
+  const setListener = async () => {
+    setUser(auth().currentUser);
+    const userId = auth().currentUser.uid;
+    database()
+      .ref(userId)
+      .child('/expenses/')
+      .on('value', (data) => {
+        if (data.val()) {
+          let values = { ...data.val() };
+          let expenses = [];
+          for (let key in values) {
+            values[key]['key'] = key;
+            values[key]['index'] = expenses.length;
+            expenses.push(values[key]);
+          }
+          setExpenses(expenses);
+        } else {
+          setExpenses([]);
+        }
+      });
+  };
+
+  React.useEffect(() => {
+    setListener();
+  }, []);
+
+  const addExpenses = (item) => {
+    // firebase.
+    database().ref(`/${user.uid}/expenses/`).push(item);
+  };
+  const deleteExpenses = (index) => {
+    database()
+      .ref(`/${user.uid}/expenses/`)
+      .child(expenses[index].key)
+      .remove();
+  };
   let sampleValues = {
     value: ['200', '400', '600', '800', '1000'],
     description: ['Food', 'Clothes', 'Transport', 'Entertainment', 'Others'],

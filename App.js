@@ -3,6 +3,7 @@ import * as React from 'react';
 import { DefaultTheme, Provider } from 'react-native-paper';
 import * as Font from 'expo-font';
 import StackNavigation from './components/navigation/StackNavigation';
+import { enableScreens } from 'react-native-screens';
 
 import inter from './assets/fonts/Inter-Regular.ttf';
 import interBold from './assets/fonts/Inter-Bold.ttf';
@@ -50,6 +51,7 @@ const customFonts = {
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = React.useState(false);
+  enableScreens(false);
   React.useEffect(() => {
     (() => {
       Font.loadAsync(customFonts).then(() => {

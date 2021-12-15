@@ -11,8 +11,6 @@ import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import firebase from "../FirebaseConfig";
 import Notes from '../screens/Notes';
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
 
 const Tab = createBottomTabNavigator();
 const handleLogout = async (navigation) => {
@@ -25,49 +23,7 @@ const handleLogout = async (navigation) => {
 
 const HomeTabNavigation = ({ navigation }) => {
   const [visible, setVisible] = React.useState(false);
-  const [expenses, setExpenses] = React.useState([]);
-  const [user, setUser] = React.useState(null);
-  const [userId, setUserId] = React.useState(null);
-  const setListener = async () => {
-    setUser(auth().currentUser);
-    const userId = auth().currentUser.uid;
-    setUserId(userId);
-    database()
-      .ref(userId)
-      .child(`/expenses/`)
-      .on('value', (data) => {
-        if (data.val()) {
-          let values = { ...data.val() };
-          let expenses = [];
-          for (let key in values) {
-            values[key]['key'] = key;
-            values[key]['index'] = expenses.length;
-            expenses.push(values[key]);
-          }
-          setExpenses(expenses);
-        } else {
-          setExpenses([]);
-        }
-      });
-  };
-
-  React.useEffect(() => {
-    setListener();
-    return () => database.ref(`/${userId}/expenses/`).off('value');
-    // setUser(firebase.auth().currentUser);
-  }, []);
-
-  const addExpense = (item) => {
-    // firebase.
-    database().ref(`/${user.uid}/expenses/`).push(item);
-  };
-  const deleteExpense = (index) => {
-    database()
-      .ref(`/${user.uid}/expenses/`)
-      .child(expenses[index].key)
-      .remove();
-  };
-
+  const [notesVisible, setNotesVisible] = React.useState(false);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -113,14 +69,7 @@ const HomeTabNavigation = ({ navigation }) => {
             )
         }}
       >
-        {(props) => (
-          <HomeScreen
-            {...props}
-            expenses={expenses.filter(
-              (item) => new Date(item.date).getMonth() === new Date().getMonth()
-            )}
-          />
-        )}
+        {(props) => <HomeScreen {...props} />}
       </Tab.Screen>
       <Tab.Screen
         name="Expenses"
@@ -152,21 +101,12 @@ const HomeTabNavigation = ({ navigation }) => {
         }}
       >
         {(props) => (
-          <Expenses
-            key={expenses}
-            {...props}
-            visible={visible}
-            setVisible={setVisible}
-            expenses={expenses}
-            addExpenses={addExpense}
-            deleteExpenses={deleteExpense}
-          />
+          <Expenses {...props} visible={visible} setVisible={setVisible} />
         )}
       </Tab.Screen>
 
       <Tab.Screen
         name="Notes"
-        component={Notes}
         options={{
           header: ({ route }) => (
             <View
@@ -174,6 +114,16 @@ const HomeTabNavigation = ({ navigation }) => {
               style={styles.tabStyles}
             >
               <Text style={styles.tabBarTitle}>{route.name}</Text>
+              <TouchableOpacity
+                style={[styles.logoutButton, { paddingLeft: 0 }]}
+                onPress={() => setNotesVisible(!notesVisible)}
+              >
+                {!notesVisible ? (
+                  <Ionicons name="add" color="#fff" size={25} />
+                ) : (
+                  <Ionicons name="close" color="#fff" size={25} />
+                )}
+              </TouchableOpacity>
             </View>
           ),
           tabBarIcon: ({ focused, color, size }) =>
@@ -183,9 +133,15 @@ const HomeTabNavigation = ({ navigation }) => {
               <Ionicons size={size} color={color} name="attach" />
             )
         }}
-      />
-      {/* {(props) => <Analytics {...props} expenses={expenses} />}
-      <Tab.Screen> */}
+      >
+        {(props) => (
+          <Notes
+            {...props}
+            notesVisible={notesVisible}
+            setNotesVisible={setNotesVisible}
+          />
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="Profile"
         component={Profile}

@@ -55,11 +55,11 @@ const Analytics = ({ expenses }) => {
     <View style={{ marginVertical: 10 }}>
       <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
         <View>
-          <Title style={{ fontSize: 20 }}>Expenses by Type</Title>
+          <Title style={{ fontSize: 20 }}>Number of Transactions</Title>
           <PieChart
             data={groupedByType}
             width={screenWidth}
-            height={140}
+            height={180}
             chartConfig={chartConfig}
             accessor={'value'}
             backgroundColor={'transparent'}
@@ -73,7 +73,7 @@ const Analytics = ({ expenses }) => {
           <PieChart
             data={groupedByWay}
             width={screenWidth}
-            height={150}
+            height={180}
             chartConfig={chartConfig}
             accessor={'value'}
             backgroundColor={'transparent'}
