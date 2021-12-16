@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import {
   GradientContainer,
   PaddedContainer,
@@ -24,13 +24,13 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
   const [user, setUser] = React.useState(null);
   const [notes, setNotes] = React.useState([]);
 
-  const setListener = async () => {
-    setUser(auth().currentUser);
+  const fetchData = () => {
     const userId = auth().currentUser.uid;
     database()
       .ref(userId)
       .child('/notes/')
-      .on('value', (data) => {
+      .once('value')
+      .then((data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let notes = [];
@@ -43,15 +43,21 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
         } else {
           setNotes([]);
         }
+      })
+      .catch((err) => {
+        setSnackbarVisible(true);
+        setSnackbarText(err.message);
       });
   };
 
   React.useEffect(() => {
-    setListener();
+    setUser(auth().currentUser);
+    fetchData();
   }, []);
 
   const addNote = (item) => {
     database().ref(`/${user.uid}/notes/`).push(item);
+    fetchData();
   };
   const deleteNote = (index) => {
     database().ref(`/${user.uid}/notes/`).child(notes[index].key).remove();
@@ -60,6 +66,22 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
   return (
     <>
       <GradientContainer>
+        <View
+          // colors={['#153759AA', '#fff']}
+          style={styles.tabStyles}
+        >
+          <Text style={styles.tabBarTitle}>Notes</Text>
+          <TouchableOpacity
+            style={[styles.logoutButton, { paddingLeft: 0 }]}
+            onPress={() => setNotesVisible(!notesVisible)}
+          >
+            {!notesVisible ? (
+              <Ionicons name="add" color="#fff" size={25} />
+            ) : (
+              <Ionicons name="close" color="#fff" size={25} />
+            )}
+          </TouchableOpacity>
+        </View>
         <PaddedContainer>
           {notesVisible ? (
             <View
@@ -147,6 +169,32 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
     </>
   );
 };
+const styles = StyleSheet.create({
+  tabBarTitle: {
+    fontSize: 25,
+    padding: 10,
+    margin: 5,
+    color: '#fff',
+    fontFamily: 'karla'
+  },
+  tabStyles: {
+    // borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#181824'
+  },
+  logoutButton: {
+    marginRight: 10,
+    paddingLeft: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    backgroundColor: '#494c59',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 Notes.propTypes = {
   notesVisible: PropTypes.bool,

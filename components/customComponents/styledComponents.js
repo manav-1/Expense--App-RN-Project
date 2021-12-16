@@ -122,7 +122,7 @@ const PaddedContainer = styled.ScrollView`
   margin: 5px;
   padding: 10px;
   position: absolute;
-  top: 0;
+  top: 50px;
   left: 0;
   right: 0;
   bottom: 0;

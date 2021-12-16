@@ -1,31 +1,18 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import Profile from '../screens/Profile';
 import Expenses from '../screens/Expenses';
-// import Analytics from '../customComponents/Analytics';
-// import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-// import firebase from "../FirebaseConfig";
 import Notes from '../screens/Notes';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-const Tab = createBottomTabNavigator();
-const handleLogout = async (navigation) => {
-  try {
-    await AsyncStorage.removeItem('expense_user');
-    navigation.push('Login');
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
-};
+const Tab = createMaterialTopTabNavigator();
 
-const HomeTabNavigation = ({ navigation }) => {
-  const [visible, setVisible] = React.useState(false);
-  const [notesVisible, setNotesVisible] = React.useState(false);
+const HomeTabNavigation = () => {
   return (
     <Tab.Navigator
+      tabBarPosition="bottom"
       screenOptions={{
         tabBarActiveBackgroundColor: '#fff',
         tabBarActiveTintColor: '#000',
@@ -36,162 +23,72 @@ const HomeTabNavigation = ({ navigation }) => {
           position: 'absolute',
           overflow: 'hidden',
           left: 15,
-          bottom: 15,
+          bottom: 10,
           right: 15,
-          padding: 5,
+          // padding: 5,
           height: 60
         }
       }}
     >
       <Tab.Screen
-        tabBarColor="#f00"
+        component={HomeScreen}
         name="Home"
+        lazy
         options={{
-          header: ({ route }) => (
-            <View
-              // colors={['#153759AA', '#fff']}
-              style={styles.tabStyles}
-            >
-              <Text style={styles.tabBarTitle}>{route.name}</Text>
-              <TouchableOpacity
-                onPress={() => handleLogout(navigation)}
-                style={styles.logoutButton}
-              >
-                <Ionicons name="log-out-outline" size={25} color="#fff" />
-              </TouchableOpacity>
-            </View>
-          ),
-          tabBarIcon: ({ focused, color, size }) =>
+          tabBarIcon: ({ focused, color }) =>
             !focused ? (
-              <Ionicons size={size} color={color} name="home-outline" />
+              <Ionicons size={20} color={color} name="home-outline" />
             ) : (
-              <Ionicons size={size} color={color} name="home" />
-            )
+              <Ionicons size={20} color={color} name="home" />
+            ),
+          tabBarIndicatorStyle: { backgroundColor: '#25253d' }
         }}
-      >
-        {(props) => <HomeScreen {...props} />}
-      </Tab.Screen>
+      />
       <Tab.Screen
         name="Expenses"
+        component={Expenses}
         options={{
-          header: ({ route }) => (
-            <View
-              // colors={['#153759AA', '#fff']}
-              style={styles.tabStyles}
-            >
-              <Text style={styles.tabBarTitle}>{route.name}</Text>
-              <TouchableOpacity
-                style={[styles.logoutButton, { paddingLeft: 0 }]}
-                onPress={() => setVisible(!visible)}
-              >
-                {!visible ? (
-                  <Ionicons name="add" color="#fff" size={25} />
-                ) : (
-                  <Ionicons name="close" color="#fff" size={25} />
-                )}
-              </TouchableOpacity>
-            </View>
-          ),
-          tabBarIcon: ({ focused, color, size }) =>
+          tabBarIcon: ({ focused, color }) =>
             !focused ? (
-              <Ionicons size={size} color={color} name="card-outline" />
+              <Ionicons size={20} color={color} name="card-outline" />
             ) : (
-              <Ionicons size={size} color={color} name="card" />
-            )
+              <Ionicons size={20} color={color} name="card" />
+            ),
+          tabBarIndicatorStyle: { backgroundColor: '#25253d' }
         }}
-      >
-        {(props) => (
-          <Expenses {...props} visible={visible} setVisible={setVisible} />
-        )}
-      </Tab.Screen>
+        lazy
+      />
 
       <Tab.Screen
         name="Notes"
+        component={Notes}
         options={{
-          header: ({ route }) => (
-            <View
-              // colors={['#153759AA', '#fff']}
-              style={styles.tabStyles}
-            >
-              <Text style={styles.tabBarTitle}>{route.name}</Text>
-              <TouchableOpacity
-                style={[styles.logoutButton, { paddingLeft: 0 }]}
-                onPress={() => setNotesVisible(!notesVisible)}
-              >
-                {!notesVisible ? (
-                  <Ionicons name="add" color="#fff" size={25} />
-                ) : (
-                  <Ionicons name="close" color="#fff" size={25} />
-                )}
-              </TouchableOpacity>
-            </View>
-          ),
-          tabBarIcon: ({ focused, color, size }) =>
+          tabBarIcon: ({ focused, color }) =>
             !focused ? (
-              <Ionicons size={size} color={color} name="attach-outline" />
+              <Ionicons size={20} color={color} name="attach-outline" />
             ) : (
-              <Ionicons size={size} color={color} name="attach" />
-            )
+              <Ionicons size={20} color={color} name="attach" />
+            ),
+          tabBarIndicatorStyle: { backgroundColor: '#25253d' }
         }}
-      >
-        {(props) => (
-          <Notes
-            {...props}
-            notesVisible={notesVisible}
-            setNotesVisible={setNotesVisible}
-          />
-        )}
-      </Tab.Screen>
+        lazy
+      />
       <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
-          header: ({ route }) => (
-            <View
-              //  colors={['#153759AA', '#fff']}
-              style={styles.tabStyles}
-            >
-              <Text style={styles.tabBarTitle}>{route.name}</Text>
-            </View>
-          ),
-          tabBarIcon: ({ focused, color, size }) =>
+          tabBarIcon: ({ focused, color }) =>
             !focused ? (
-              <Ionicons size={size} color={color} name="person-outline" />
+              <Ionicons size={20} color={color} name="person-outline" />
             ) : (
-              <Ionicons size={size} color={color} name="person" />
-            )
+              <Ionicons size={20} color={color} name="person" />
+            ),
+          tabBarIndicatorStyle: { backgroundColor: '#25253d' }
         }}
       />
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  tabBarTitle: {
-    fontSize: 25,
-    padding: 10,
-    margin: 5,
-    color: '#fff',
-    fontFamily: 'karla'
-  },
-  tabStyles: {
-    // borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#181824'
-  },
-  logoutButton: {
-    marginRight: 10,
-    paddingLeft: 5,
-    width: 40,
-    height: 40,
-    borderRadius: 25,
-    backgroundColor: '#494c59',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
 
 HomeTabNavigation.propTypes = {
   navigation: PropTypes.object

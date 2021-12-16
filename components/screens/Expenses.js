@@ -23,17 +23,17 @@ import { sample } from 'lodash';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
-const Expenses = ({ visible, setVisible }) => {
+const Expenses = ({ navigation }) => {
   const [expenses, setExpenses] = React.useState([]);
   const [user, setUser] = React.useState(null);
 
-  const setListener = async () => {
-    setUser(auth().currentUser);
+  const fetchData = async () => {
     const userId = auth().currentUser.uid;
     database()
       .ref(userId)
       .child('/expenses/')
-      .on('value', (data) => {
+      .once('value')
+      .then((data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let expenses = [];
@@ -43,19 +43,26 @@ const Expenses = ({ visible, setVisible }) => {
             expenses.push(values[key]);
           }
           setExpenses(expenses);
+          setExpensesToShow(expenses);
         } else {
           setExpenses([]);
         }
+      })
+      .catch((err) => {
+        setSnackbarVisible(true);
+        setSnackbarText(err.message);
       });
   };
 
   React.useEffect(() => {
-    setListener();
+    setUser(auth().currentUser);
+    fetchData();
   }, []);
 
   const addExpenses = (item) => {
     // firebase.
     database().ref(`/${user.uid}/expenses/`).push(item);
+    fetchData();
   };
   const deleteExpenses = (index) => {
     database()
@@ -85,6 +92,7 @@ const Expenses = ({ visible, setVisible }) => {
   );
   //sorted by date
   const [values, setValues] = React.useState('array');
+  const [visible, setVisible] = React.useState(false);
 
   const handleNewExpense = async () => {
     setIsLoading(true);
@@ -117,6 +125,22 @@ const Expenses = ({ visible, setVisible }) => {
   return (
     <>
       <GradientContainer>
+        <View
+          // colors={['#153759AA', '#fff']}
+          style={styles.tabStyles}
+        >
+          <Text style={styles.tabBarTitle}>Expenses</Text>
+          <TouchableOpacity
+            style={[styles.logoutButton, { paddingLeft: 0 }]}
+            onPress={() => setVisible(!visible)}
+          >
+            {!visible ? (
+              <Ionicons name="add" color="#fff" size={25} />
+            ) : (
+              <Ionicons name="close" color="#fff" size={25} />
+            )}
+          </TouchableOpacity>
+        </View>
         <PaddedContainer>
           <ScrollView horizontal>
             <Chip
@@ -422,6 +446,30 @@ const styles = StyleSheet.create({
   chip: {
     marginHorizontal: 8,
     marginBottom: 10
+  },
+  tabBarTitle: {
+    fontSize: 25,
+    padding: 10,
+    margin: 5,
+    color: '#fff',
+    fontFamily: 'karla'
+  },
+  tabStyles: {
+    // borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#181824'
+  },
+  logoutButton: {
+    marginRight: 10,
+    paddingLeft: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    backgroundColor: '#494c59',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

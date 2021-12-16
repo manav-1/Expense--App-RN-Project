@@ -22,18 +22,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import { groupBy } from 'lodash';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation }) => {
   const [expenses, setExpenses] = React.useState([]);
   const [user, setUser] = React.useState(null);
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('expense_user');
+      navigation.push('Login');
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+  };
+
   const setListener = async () => {
-    setUser(auth().currentUser);
     const userId = auth().currentUser.uid;
     database()
       .ref(userId)
       .child('/expenses/')
-      .on('value', (data) => {
+      .once('value')
+      .then((data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let expenses = [];
@@ -54,12 +63,11 @@ const HomeScreen = ({ navigation }) => {
   };
 
   React.useEffect(() => {
-    setListener();
-  }, []);
-  React.useEffect(() => {
     (() => {
       navigation.addListener('beforeRemove', (e) => e.preventDefault());
     })();
+    setUser(auth().currentUser);
+    setListener();
   }, []);
   const groupByDates = () => {
     const groupedByDate = groupBy(
@@ -88,6 +96,18 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <GradientContainer>
+      <View
+        // colors={['#153759AA', '#fff']}
+        style={styles.tabStyles}
+      >
+        <Text style={styles.tabBarTitle}>Home</Text>
+        <TouchableOpacity
+          onPress={() => handleLogout(navigation)}
+          style={styles.logoutButton}
+        >
+          <Ionicons name="log-out-outline" size={25} color="#fff" />
+        </TouchableOpacity>
+      </View>
       <PaddedContainer>
         <LinearGradient
           style={{ borderRadius: 20, padding: 10, marginHorizontal: 50 }}
@@ -251,5 +271,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff'
+  },
+  tabBarTitle: {
+    fontSize: 25,
+    padding: 10,
+    color: '#fff',
+    fontFamily: 'karla'
+  },
+  tabStyles: {
+    // borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#181824'
+  },
+  logoutButton: {
+    marginRight: 10,
+    paddingLeft: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    backgroundColor: '#494c59',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

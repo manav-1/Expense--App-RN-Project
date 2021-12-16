@@ -12,7 +12,8 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import auth from '@react-native-firebase/auth';
 import {
   GradientContainer,
-  ExpenseInput
+  ExpenseInput,
+  PaddedContainer
 } from '../customComponents/styledComponents';
 import { Snackbar, ProgressBar } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
@@ -101,54 +102,62 @@ const Profile = () => {
 
   return (
     <GradientContainer>
-      {isLoading ? (
-        <ProgressBar progress={0.8} color="#f1c0cb" indeterminate />
-      ) : null}
-      <View style={styles.editImageContainer}>
-        <Image
-          source={{
-            uri:
-              image ??
-              'https://sitechecker.pro/wp-content/uploads/2017/12/URL-meaning.png'
-          }}
-          style={styles.profileImage}
-        />
-        <TouchableOpacity onPress={pickImage} style={styles.editProfileButton}>
-          <FontAwesome5 name="edit" size={18} color="#000" />
-        </TouchableOpacity>
+      <View style={styles.tabStyles}>
+        <Text style={styles.tabBarTitle}>Profile</Text>
       </View>
-
-      <View>
-        <Text style={styles.text}>Name</Text>
-        <ExpenseInput
-          value={userName}
-          onChangeText={(val) => setUserName(val)}
-          style={styles.expenseInput}
-        />
-        <Text style={styles.text}>Email</Text>
-        <ExpenseInput
-          value={userEmail}
-          editable={false}
-          style={styles.expenseInput}
-        />
-
-        <TouchableOpacity onPress={updateProfile} style={styles.saveButton}>
-          <Text style={styles.saveText}>
-            Save Profile&nbsp;&nbsp;
-            <Ionicons name="save-outline" color="#000" size={16} />
-          </Text>
-        </TouchableOpacity>
-        <View style={{ alignSelf: 'flex-end' }}>
-          <Text style={[styles.text, styles.extraText]}>
-            Account Created on
-          </Text>
-          <Text style={[styles.text, styles.extraText]}>
-            {user
-              ? new Date(user.metadata.creationTime).toLocaleDateString()
-              : null}
-          </Text>
+      <PaddedContainer>
+        {isLoading ? (
+          <ProgressBar progress={0.8} color="#f1c0cb" indeterminate />
+        ) : null}
+        <View style={styles.editImageContainer}>
+          <Image
+            source={{
+              uri:
+                image ??
+                'https://sitechecker.pro/wp-content/uploads/2017/12/URL-meaning.png'
+            }}
+            style={styles.profileImage}
+          />
+          <TouchableOpacity
+            onPress={pickImage}
+            style={styles.editProfileButton}
+          >
+            <FontAwesome5 name="edit" size={18} color="#000" />
+          </TouchableOpacity>
         </View>
-      </View>
+
+        <View>
+          <Text style={styles.text}>Name</Text>
+          <ExpenseInput
+            value={userName}
+            onChangeText={(val) => setUserName(val)}
+            style={styles.expenseInput}
+          />
+          <Text style={styles.text}>Email</Text>
+          <ExpenseInput
+            value={userEmail}
+            editable={false}
+            style={styles.expenseInput}
+          />
+
+          <TouchableOpacity onPress={updateProfile} style={styles.saveButton}>
+            <Text style={styles.saveText}>
+              Save Profile&nbsp;&nbsp;
+              <Ionicons name="save-outline" color="#000" size={16} />
+            </Text>
+          </TouchableOpacity>
+          <View style={{ alignSelf: 'flex-end' }}>
+            <Text style={[styles.text, styles.extraText]}>
+              Account Created on
+            </Text>
+            <Text style={[styles.text, styles.extraText]}>
+              {user
+                ? new Date(user.metadata.creationTime).toLocaleDateString()
+                : null}
+            </Text>
+          </View>
+        </View>
+      </PaddedContainer>
       <Snackbar
         visible={snackbarVisible}
         duration={3000}
@@ -213,7 +222,31 @@ const styles = StyleSheet.create({
   extraText: { fontSize: 16, textAlign: 'right', marginTop: 2 },
   snackbar: { backgroundColor: '#f1c0cb', marginBottom: 80 },
   snackBarText: { color: '#000' },
-  editImageContainer: { position: 'absolute', right: 10, top: 10 }
+  editImageContainer: { position: 'absolute', right: 10, top: 10 },
+  tabBarTitle: {
+    fontSize: 25,
+    padding: 10,
+    margin: 5,
+    color: '#fff',
+    fontFamily: 'karla'
+  },
+  tabStyles: {
+    // borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#181824'
+  },
+  logoutButton: {
+    marginRight: 10,
+    paddingLeft: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    backgroundColor: '#494c59',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default Profile;
