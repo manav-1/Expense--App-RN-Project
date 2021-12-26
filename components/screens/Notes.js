@@ -14,8 +14,9 @@ import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import CustomNote from '../customComponents/CustomNote';
 
-const Notes = ({ notesVisible, setNotesVisible }) => {
+const Notes = () => {
   const [date, setDate] = React.useState(new Date());
   const [open, setOpen] = React.useState(false);
   const [note, setNote] = React.useState('');
@@ -23,14 +24,14 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
   const [snackbarText, setSnackbarText] = React.useState('');
   const [user, setUser] = React.useState(null);
   const [notes, setNotes] = React.useState([]);
+  const [notesVisible, setNotesVisible] = React.useState(false);
 
   const fetchData = () => {
     const userId = auth().currentUser.uid;
     database()
       .ref(userId)
       .child('/notes/')
-      .once('value')
-      .then((data) => {
+      .on('value', (data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let notes = [];
@@ -43,11 +44,12 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
         } else {
           setNotes([]);
         }
-      })
-      .catch((err) => {
-        setSnackbarVisible(true);
-        setSnackbarText(err.message);
       });
+    // .then()
+    // .catch((err) => {
+    //   setSnackbarVisible(true);
+    //   setSnackbarText(err.message);
+    // });
   };
 
   React.useEffect(() => {
@@ -143,7 +145,7 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
                 open={open}
                 date={date}
                 mode="date"
-                androidVariant="nativeAndroid"
+                androidVariant="iosClone"
                 title="Select Completion Date"
                 minimumDate={new Date()}
                 onConfirm={(date) => {
@@ -156,6 +158,13 @@ const Notes = ({ notesVisible, setNotesVisible }) => {
               />
             </View>
           ) : null}
+          {notes.map((note) => (
+            <CustomNote
+              key={note.index}
+              note={note}
+              deleteNote={() => deleteNote(note.index)}
+            />
+          ))}
         </PaddedContainer>
       </GradientContainer>
       <Snackbar

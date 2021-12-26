@@ -26,6 +26,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation }) => {
   const [expenses, setExpenses] = React.useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [user, setUser] = React.useState(null);
 
   const handleLogout = async () => {
@@ -41,8 +42,7 @@ const HomeScreen = ({ navigation }) => {
     database()
       .ref(userId)
       .child('/expenses/')
-      .once('value')
-      .then((data) => {
+      .on('value', (data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let expenses = [];
@@ -60,6 +60,7 @@ const HomeScreen = ({ navigation }) => {
           setExpenses([]);
         }
       });
+    // .then();
   };
 
   React.useEffect(() => {

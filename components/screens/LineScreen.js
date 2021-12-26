@@ -73,7 +73,7 @@ const LineScreen = (props) => {
           height={200}
           fromZero={true}
           withInnerLines={false}
-          bezier
+          bezier={dateList.length < 1}
           xLabelsOffset={-4}
           withHorizontalLabels={false}
           hidePointsAtIndex={[0, data.labels.length - 1]}

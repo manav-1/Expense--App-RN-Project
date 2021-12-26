@@ -23,6 +23,7 @@ import { sample } from 'lodash';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
+// eslint-disable-next-line no-unused-vars
 const Expenses = ({ navigation }) => {
   const [expenses, setExpenses] = React.useState([]);
   const [user, setUser] = React.useState(null);
@@ -107,10 +108,11 @@ const Expenses = ({ navigation }) => {
       .then(() => {
         addExpenses({ ...expense, date: new Date().toDateString() });
         setExpense({
-          value: '',
-          description: '',
-          type: '',
-          way: ''
+          value: sample(sampleValues.value),
+          description: sample(sampleValues.description),
+          type: sample(sampleValues.type),
+          way: sample(sampleValues.way),
+          date: ''
         });
         setSnackbarVisible(true);
         setSnackbarText('Added Successfully');

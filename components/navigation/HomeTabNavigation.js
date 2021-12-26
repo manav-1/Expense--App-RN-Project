@@ -5,6 +5,7 @@ import Expenses from '../screens/Expenses';
 import { Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import Notes from '../screens/Notes';
+import Analytics from '../screens/Analytics';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
@@ -18,6 +19,7 @@ const HomeTabNavigation = () => {
         tabBarActiveTintColor: '#000',
         tabBarInactiveBackgroundColor: '#fff',
         tabBarInactiveTintColor: '#0008',
+        tabBarLabelStyle: { fontFamily: 'karla', fontSize: 10 },
         tabBarStyle: {
           borderRadius: 50,
           position: 'absolute',
@@ -72,6 +74,19 @@ const HomeTabNavigation = () => {
           tabBarIndicatorStyle: { backgroundColor: '#25253d' }
         }}
         lazy
+      />
+      <Tab.Screen
+        name="Analytics"
+        component={Analytics}
+        options={{
+          tabBarIcon: ({ focused, color }) =>
+            !focused ? (
+              <Ionicons size={20} color={color} name="analytics-outline" />
+            ) : (
+              <Ionicons size={20} color={color} name="analytics" />
+            ),
+          tabBarIndicatorStyle: { backgroundColor: '#25253d' }
+        }}
       />
       <Tab.Screen
         name="Profile"
