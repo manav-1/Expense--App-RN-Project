@@ -122,9 +122,8 @@ const Expenses = ({ navigation }) => {
     validationSchema
       .validate(expense)
       .then(() => {
-        if (!editable)
-          addExpenses({ ...expense, date: expense.date.toDateString() });
-        else addExpenses({ ...expense });
+        addExpenses({ ...expense, date: expense.date.toDateString() });
+
         setExpense({
           value: sample(sampleValues.value),
           description: sample(sampleValues.description),
@@ -149,7 +148,7 @@ const Expenses = ({ navigation }) => {
       description: expense.description,
       type: expense.type,
       way: expense.way,
-      date: expense.date
+      date: new Date(expense.date)
     });
     setEditable(true);
     setEditKey(expense.key);
