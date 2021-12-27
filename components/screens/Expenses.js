@@ -5,7 +5,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  FlatList
 } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {
@@ -380,34 +381,17 @@ const Expenses = ({ navigation }) => {
             </View>
           ) : null}
           {values == 'array' && expensesToShow.length > 0 ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent:
-                  expensesToShow.length > 1 ? 'space-around' : 'flex-start'
-              }}
-            >
-              {!showMore
-                ? expensesToShow
-                    .slice(0, 6)
-                    .map((expense, index) => (
-                      <CustomExpense
-                        key={index}
-                        expense={expense}
-                        deleteItem={() => deleteExpenses(expense.index)}
-                        editItem={() => editExpense(expense)}
-                      />
-                    ))
-                : expensesToShow.map((expense, index) => (
-                    <CustomExpense
-                      key={index}
-                      expense={expense}
-                      deleteItem={() => deleteExpenses(expense.index)}
-                      editItem={() => editExpense(expense)}
-                    />
-                  ))}
-            </View>
+            <FlatList
+              data={!showMore ? expensesToShow.slice(0, 6) : expensesToShow}
+              numColumns={2}
+              renderItem={({ item }) => (
+                <CustomExpense
+                  expense={item}
+                  editItem={() => editExpense(item)}
+                  deleteItem={() => deleteExpenses(item.index)}
+                />
+              )}
+            />
           ) : (
             Object.keys(expensesToShow).map((key, index) => {
               return (
@@ -569,3 +553,34 @@ Expenses.propTypes = {
 };
 
 export default Expenses;
+
+{
+  /* <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent:
+                  expensesToShow.length > 1 ? 'space-around' : 'flex-start'
+              }}
+            >
+              {!showMore
+                ? expensesToShow
+                    .slice(0, 6)
+                    .map((expense, index) => (
+                      <CustomExpense
+                        key={index}
+                        expense={expense}
+                        deleteItem={() => deleteExpenses(expense.index)}
+                        editItem={() => editExpense(expense)}
+                      />
+                    ))
+                : expensesToShow.map((expense, index) => (
+                    <CustomExpense
+                      key={index}
+                      expense={expense}
+                      deleteItem={() => deleteExpenses(expense.index)}
+                      editItem={() => editExpense(expense)}
+                    />
+                  ))}
+            </View> */
+}

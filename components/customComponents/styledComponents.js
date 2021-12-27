@@ -128,7 +128,16 @@ const PaddedContainer = styled.ScrollView`
   bottom: 0;
   margin-bottom: 80px;
 `;
-
+const PaddedViewContainer = styled.View`
+  margin: 5px;
+  padding: 10px;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 80px;
+`;
 const ExpenseInput = styled.TextInput`
   width: 90%;
   border-bottom-width: 2px;
@@ -157,6 +166,7 @@ export {
   IconText,
   FullContainer,
   GradientContainer,
+  PaddedViewContainer,
   PaddedContainer,
   ExpenseInput,
   CenteredKarlaText

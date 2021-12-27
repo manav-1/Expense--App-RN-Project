@@ -1,6 +1,12 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList
+} from 'react-native';
 import CustomExpense from './CustomExpense';
 import PropTypes from 'prop-types';
 
@@ -31,14 +37,25 @@ const ExpenseAccordion = ({ title, expenses, deleteExpenses, editItem }) => {
             }
           ]}
         >
-          {expenses.map((expense, index) => (
+          {/* {expenses.map((expense, index) => (
             <CustomExpense
               key={index}
               expense={expense}
               deleteItem={() => deleteExpenses(expense.index)}
               editItem={() => editItem(expense)}
             />
-          ))}
+          ))} */}
+          <FlatList
+            data={expenses}
+            numColumns={2}
+            renderItem={({ item }) => (
+              <CustomExpense
+                expense={item}
+                editItem={() => editItem(item)}
+                deleteItem={() => deleteExpenses(item.index)}
+              />
+            )}
+          />
         </View>
       ) : null}
     </View>
