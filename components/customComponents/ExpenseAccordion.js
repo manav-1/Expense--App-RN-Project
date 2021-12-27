@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import CustomExpense from './CustomExpense';
 import PropTypes from 'prop-types';
 
-const ExpenseAccordion = ({ title, expenses, deleteExpenses }) => {
+const ExpenseAccordion = ({ title, expenses, deleteExpenses, editItem }) => {
   const [expanded, setExpanded] = React.useState(false);
   return (
     <View style={styles.accordionContainer}>
@@ -36,6 +36,7 @@ const ExpenseAccordion = ({ title, expenses, deleteExpenses }) => {
               key={index}
               expense={expense}
               deleteItem={() => deleteExpenses(expense.index)}
+              editItem={() => editItem(expense)}
             />
           ))}
         </View>
@@ -68,7 +69,8 @@ const styles = StyleSheet.create({
 ExpenseAccordion.propTypes = {
   title: PropTypes.string,
   expenses: PropTypes.array,
-  deleteExpenses: PropTypes.func
+  deleteExpenses: PropTypes.func,
+  editItem: PropTypes.func
 };
 
 export default ExpenseAccordion;

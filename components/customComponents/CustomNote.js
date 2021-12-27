@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { capitalize } from 'lodash';
-import { IconButton } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
 const CustomNote = ({ note, deleteNote }) => {
@@ -11,14 +10,13 @@ const CustomNote = ({ note, deleteNote }) => {
     <View style={styles.note}>
       <View>
         <ExpandableText note={capitalize(noteText)} />
-        <Text style={styles.dateText}>{date}</Text>
+        <Text style={styles.dateText}>
+          {new Date(date).toDateString()}
+        </Text>
       </View>
-      <IconButton
-        icon={() => (
-          <Ionicons name="close-circle-outline" size={22} color="#F05454" />
-        )}
-        onPress={deleteNote}
-      />
+      <Text style={styles.iconButton} onPress={deleteNote}>
+        <Ionicons name="close-circle-outline" size={22} color="#F05454" />
+      </Text>
     </View>
   );
 };
@@ -44,23 +42,29 @@ const styles = StyleSheet.create({
     borderColor: '#f2f2f2',
     borderWidth: 1.5,
     borderRadius: 5,
-    padding: 10,
-    marginVertical: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    marginVertical: 5
+    // padding: 10
   },
   noteText: {
     fontFamily: 'notoSans',
     fontSize: 18,
     color: '#fff',
-    marginBottom: 5,
-    width: 300
+    marginVertical: 15,
+    marginHorizontal: 5,
+    padding: 7
   },
   dateText: {
     fontFamily: 'notoSans',
     fontSize: 13,
-    color: '#fff'
+    color: '#fff',
+    position: 'absolute',
+    bottom: 3,
+    right: 5
+  },
+  iconButton: {
+    position: 'absolute',
+    right: 5,
+    top: 5
   }
 });
 

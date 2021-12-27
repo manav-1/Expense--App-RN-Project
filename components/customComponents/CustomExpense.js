@@ -4,7 +4,7 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Chip } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-const CustomExpense = ({ expense, deleteItem }) => {
+const CustomExpense = ({ expense, deleteItem, editItem }) => {
   const getWayIcon = (way) => {
     switch (way) {
       case 'Cash':
@@ -62,9 +62,17 @@ const CustomExpense = ({ expense, deleteItem }) => {
         </Text>
       </View>
       {deleteItem && (
-        <TouchableOpacity style={styles.deleteButton} onPress={deleteItem}>
-          <FontAwesome5 name="times-circle" size={20} color="#fff" />
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity style={styles.deleteButton} onPress={deleteItem}>
+            <FontAwesome5 name="times-circle" size={20} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.deleteButton, { right: 30, top: 6 }]}
+            onPress={editItem}
+          >
+            <FontAwesome5 name="edit" size={16} color="#fff" />
+          </TouchableOpacity>
+        </>
       )}
     </View>
   );
@@ -119,7 +127,8 @@ const styles = StyleSheet.create({
 
 CustomExpense.propTypes = {
   expense: PropTypes.object.isRequired,
-  deleteItem: PropTypes.func
+  deleteItem: PropTypes.func,
+  editItem: PropTypes.func
 };
 
 export default CustomExpense;

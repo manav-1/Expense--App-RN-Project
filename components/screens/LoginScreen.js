@@ -40,7 +40,8 @@ try {
       '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com'
   });
   // eslint-disable-next-line no-empty
-} catch (error) {}
+} catch (error) {
+}
 
 const LoginScreen = ({ navigation }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
@@ -99,11 +100,17 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleGoogleLogin = async () => {
-    const { idToken } = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    await auth().signInWithCredential(googleCredential);
-    await AsyncStorage.setItem('expense_user', auth().currentUser.uid);
-    navigation.push('HomeNav');
+    try {
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+      await AsyncStorage.setItem('expense_user', auth().currentUser.uid);
+      navigation.push('HomeNav');
+    } catch (error) {
+      setSnackbarVisible(true);
+      console.log(error);
+      setSnackbarText(error.message);
+    }
   };
 
   const handleFacebookLogin = async () => {

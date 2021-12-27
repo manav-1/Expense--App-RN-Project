@@ -7,7 +7,7 @@ import {
   CenteredKarlaText
 } from '../customComponents/styledComponents';
 // import DatePicker from 'react-native-datepicker';
-import DatePicker from 'react-native-date-picker';
+import DatePicker from 'react-native-neat-date-picker';
 import { Snackbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import * as Yup from 'yup';
@@ -57,6 +57,28 @@ const Notes = () => {
     fetchData();
   }, []);
 
+  const handleNewNote = () => {
+    const values = { date: date.toLocaleDateString(), note };
+    const validationSchema = Yup.object({
+      date: Yup.date().required('Date is required'),
+      note: Yup.string().required('Note is required')
+    });
+    validationSchema
+      .validate(values)
+      .then(() => {
+        addNote(values);
+        setSnackbarVisible(true);
+        setSnackbarText('Added Successfully');
+        setNote('');
+        setDate(new Date());
+        setNotesVisible(false);
+      })
+      .catch((error) => {
+        setSnackbarVisible(true);
+        setSnackbarText(error.message);
+      });
+    setNotesVisible(false);
+  };
   const addNote = (item) => {
     database().ref(`/${user.uid}/notes/`).push(item);
     fetchData();
@@ -102,7 +124,7 @@ const Notes = () => {
                 onChangeText={setNote}
               />
               <TouchableOpacity onPress={() => setOpen(true)}>
-                <Text style={{ color: '#f2f2f2' }}>
+                <Text style={{ color: '#f2f2f2', fontFamily: 'karla' }}>
                   {date.toLocaleDateString()}
                 </Text>
               </TouchableOpacity>
@@ -113,41 +135,15 @@ const Notes = () => {
                   padding: 10,
                   borderRadius: 10
                 }}
-                onPress={() => {
-                  const values = { date: date.toLocaleDateString(), note };
-                  const validationSchema = Yup.object({
-                    date: Yup.date().required('Date is required'),
-                    note: Yup.string().required('Note is required')
-                  });
-                  validationSchema
-                    .validate(values)
-                    .then(() => {
-                      addNote(values);
-                      setSnackbarVisible(true);
-                      setSnackbarText('Added Successfully');
-                      setNote('');
-                      setDate(new Date());
-                      setNotesVisible(false);
-                    })
-                    .catch((error) => {
-                      setSnackbarVisible(true);
-                      setSnackbarText(error.message);
-                    });
-                  setNotesVisible(false);
-                }}
+                onPress={handleNewNote}
               >
                 <CenteredKarlaText>
                   Save <Ionicons name="save-outline" size={14} />
                 </CenteredKarlaText>
               </TouchableOpacity>
               <DatePicker
-                modal
-                open={open}
-                date={date}
-                mode="date"
-                androidVariant="iosClone"
-                title="Select Completion Date"
-                minimumDate={new Date()}
+                isVisible={open}
+                mode={'single'}
                 onConfirm={(date) => {
                   setOpen(false);
                   setDate(date);

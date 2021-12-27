@@ -22,19 +22,47 @@ import { Chip } from 'react-native-paper';
 import { sample } from 'lodash';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+// import DatePicker from 'react-native-date-picker';
+import DatePicker from 'react-native-neat-date-picker';
 
 // eslint-disable-next-line no-unused-vars
 const Expenses = ({ navigation }) => {
+  const sampleValues = {
+    value: ['200', '400', '600', '800', '1000'],
+    description: ['Food', 'Clothes', 'Transport', 'Entertainment', 'Others'],
+    type: ['Credit', 'Debit'],
+    way: ['Cash', 'Card', 'Bank Transfer', 'UPI', 'Cheque', 'Net Banking']
+  };
   const [expenses, setExpenses] = React.useState([]);
   const [user, setUser] = React.useState(null);
+  const [editKey, setEditKey] = React.useState(null);
+  const [editable, setEditable] = React.useState(false);
+
+  const [expense, setExpense] = React.useState({
+    value: sample(sampleValues.value),
+    description: sample(sampleValues.description),
+    type: sample(sampleValues.type),
+    way: sample(sampleValues.way),
+    date: new Date()
+  });
+  const [showMore, setShowMore] = React.useState(false);
+  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+  const [snackbarText, setSnackbarText] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [expensesToShow, setExpensesToShow] = React.useState(
+    expenses.sort((a, b) => new Date(a.date) - new Date(b.date)).reverse()
+  );
+  //sorted by date
+  const [open, setOpen] = React.useState(false);
+  const [values, setValues] = React.useState('array');
+  const [visible, setVisible] = React.useState(false);
 
   const fetchData = async () => {
     const userId = auth().currentUser.uid;
     database()
       .ref(userId)
       .child('/expenses/')
-      .once('value')
-      .then((data) => {
+      .on('value', (data) => {
         if (data.val()) {
           let values = { ...data.val() };
           let expenses = [];
@@ -44,15 +72,18 @@ const Expenses = ({ navigation }) => {
             expenses.push(values[key]);
           }
           setExpenses(expenses);
+          setValues('array');
           setExpensesToShow(expenses);
         } else {
           setExpenses([]);
+          setValues('array');
         }
-      })
-      .catch((err) => {
-        setSnackbarVisible(true);
-        setSnackbarText(err.message);
       });
+    // .then()
+    // .catch((err) => {
+    //   setSnackbarVisible(true);
+    //   setSnackbarText(err.message);
+    // });
   };
 
   React.useEffect(() => {
@@ -62,8 +93,15 @@ const Expenses = ({ navigation }) => {
 
   const addExpenses = (item) => {
     // firebase.
-    database().ref(`/${user.uid}/expenses/`).push(item);
-    fetchData();
+    if (!editable) {
+      database().ref(`/${user.uid}/expenses/`).push(item);
+      setSnackbarText('Added Successfully');
+      setVisible(false);
+    } else {
+      database().ref(`/${user.uid}/expenses/${editKey}`).set(item);
+      setSnackbarText('Saved Successfully');
+      setVisible(false);
+    }
   };
   const deleteExpenses = (index) => {
     database()
@@ -71,52 +109,31 @@ const Expenses = ({ navigation }) => {
       .child(expenses[index].key)
       .remove();
   };
-  let sampleValues = {
-    value: ['200', '400', '600', '800', '1000'],
-    description: ['Food', 'Clothes', 'Transport', 'Entertainment', 'Others'],
-    type: ['Credit', 'Debit'],
-    way: ['Cash', 'Card', 'Bank Transfer', 'UPI', 'Cheque', 'Net Banking']
-  };
-  const [expense, setExpense] = React.useState({
-    value: sample(sampleValues.value),
-    description: sample(sampleValues.description),
-    type: sample(sampleValues.type),
-    way: sample(sampleValues.way),
-    date: ''
-  });
-  const [showMore, setShowMore] = React.useState(false);
-  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [snackbarText, setSnackbarText] = React.useState('');
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [expensesToShow, setExpensesToShow] = React.useState(
-    expenses.sort((a, b) => new Date(a.date) < new Date(b.date))
-  );
-  //sorted by date
-  const [values, setValues] = React.useState('array');
-  const [visible, setVisible] = React.useState(false);
-
   const handleNewExpense = async () => {
     setIsLoading(true);
     const validationSchema = Yup.object({
       value: Yup.number().required('Please enter a value'),
       type: Yup.string().required('Please select an expense type'),
       way: Yup.string().required('Please select an expense way'),
-      description: Yup.string().required('Please enter a description')
+      description: Yup.string().required('Please enter a description'),
+      date: Yup.date().required('Please enter a date')
     });
     validationSchema
       .validate(expense)
       .then(() => {
-        addExpenses({ ...expense, date: new Date().toDateString() });
+        if (!editable)
+          addExpenses({ ...expense, date: expense.date.toDateString() });
+        else addExpenses({ ...expense });
         setExpense({
           value: sample(sampleValues.value),
           description: sample(sampleValues.description),
           type: sample(sampleValues.type),
           way: sample(sampleValues.way),
-          date: ''
+          date: new Date()
         });
+        setEditable(false);
+        setEditKey(null);
         setSnackbarVisible(true);
-        setSnackbarText('Added Successfully');
-        setVisible(false);
       })
       .catch((err) => {
         setSnackbarVisible(true);
@@ -124,6 +141,19 @@ const Expenses = ({ navigation }) => {
       });
     setIsLoading(false);
   };
+  const editExpense = async (expense) => {
+    setVisible(true);
+    setExpense({
+      value: expense.value,
+      description: expense.description,
+      type: expense.type,
+      way: expense.way,
+      date: expense.date
+    });
+    setEditable(true);
+    setEditKey(expense.key);
+  };
+
   return (
     <>
       <GradientContainer>
@@ -220,7 +250,9 @@ const Expenses = ({ navigation }) => {
                 }}
               >
                 <View>
-                  <Text style={{ color: '#fff' }}>Expense Value</Text>
+                  <Text style={{ color: '#fff', fontFamily: 'karla' }}>
+                    Expense Value
+                  </Text>
                   <ExpenseInput
                     keyboardType="numeric"
                     value={expense.value}
@@ -231,7 +263,9 @@ const Expenses = ({ navigation }) => {
                   />
                 </View>
                 <View>
-                  <Text style={{ color: '#fff' }}>Expense Description</Text>
+                  <Text style={{ color: '#fff', fontFamily: 'karla' }}>
+                    Expense Description
+                  </Text>
 
                   <ExpenseInput
                     value={expense.description}
@@ -244,7 +278,9 @@ const Expenses = ({ navigation }) => {
                   />
                 </View>
                 <View style={{ padding: 10 }}>
-                  <Text style={{ color: '#fff' }}>Expense Type</Text>
+                  <Text style={{ color: '#fff', fontFamily: 'karla' }}>
+                    Expense Type
+                  </Text>
                   <SelectDropdown
                     renderDropdownIcon={() => (
                       <Ionicons name="chevron-down" size={20} />
@@ -261,8 +297,11 @@ const Expenses = ({ navigation }) => {
                     }
                   />
                 </View>
+
                 <View style={{ padding: 10 }}>
-                  <Text style={{ color: '#fff' }}>Expense Way</Text>
+                  <Text style={{ color: '#fff', fontFamily: 'karla' }}>
+                    Expense Way
+                  </Text>
                   <SelectDropdown
                     renderDropdownIcon={() => (
                       <Ionicons name="chevron-down" size={20} />
@@ -286,17 +325,61 @@ const Expenses = ({ navigation }) => {
                     }
                   />
                 </View>
-              </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ color: '#fff', fontFamily: 'karla' }}>
+                    Date
+                  </Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      { justifyContent: 'center', alignItems: 'center' }
+                    ]}
+                    onPress={() => setOpen(true)}
+                  >
+                    <Text style={{ color: 'black', fontFamily: 'karla' }}>
+                      {expense.date.toDateString()}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
-              <TouchableOpacity
-                onPress={handleNewExpense}
-                style={styles.addButton}
-              >
-                <Text style={styles.addButtonText}>Add</Text>
-              </TouchableOpacity>
+                {/* <DatePicker
+                  modal
+                  open={open}
+                  date={expense.date}
+                  mode="date"
+                  androidVariant="iosClone"
+                  title="Select Completion Date"
+                  onConfirm={(date) => {
+                    setOpen(false);
+                    setExpense({ ...expense, date: date });
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                /> */}
+                <DatePicker
+                  isVisible={open}
+                  mode={'single'}
+                  onConfirm={(date) => {
+                    setOpen(false);
+                    setExpense({ ...expense, date: date });
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                />
+              </View>
+              <View style={{ position: 'absolute', right: 5, top: 5 }}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleNewExpense}
+                >
+                  <Ionicons name="add" color="#000" size={25}></Ionicons>
+                </TouchableOpacity>
+              </View>
             </View>
           ) : null}
-          {values == 'array' && expenses.length > 0 ? (
+          {values == 'array' && expensesToShow.length > 0 ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -307,15 +390,13 @@ const Expenses = ({ navigation }) => {
             >
               {!showMore
                 ? expensesToShow
-                    .slice(
-                      0,
-                      expensesToShow.length > 6 ? 6 : expensesToShow.length
-                    )
+                    .slice(0, 6)
                     .map((expense, index) => (
                       <CustomExpense
                         key={index}
                         expense={expense}
                         deleteItem={() => deleteExpenses(expense.index)}
+                        editItem={() => editExpense(expense)}
                       />
                     ))
                 : expensesToShow.map((expense, index) => (
@@ -323,6 +404,7 @@ const Expenses = ({ navigation }) => {
                       key={index}
                       expense={expense}
                       deleteItem={() => deleteExpenses(expense.index)}
+                      editItem={() => editExpense(expense)}
                     />
                   ))}
             </View>
@@ -333,6 +415,7 @@ const Expenses = ({ navigation }) => {
                   title={key}
                   expenses={expensesToShow[key]}
                   deleteItem={deleteExpenses}
+                  editItem={editExpense}
                   key={index}
                 />
               );
@@ -379,16 +462,17 @@ const Expenses = ({ navigation }) => {
 const styles = StyleSheet.create({
   button: {
     padding: 0,
-    height: 45,
+    height: 40,
     backgroundColor: '#ccf0fa',
     borderRadius: 10,
     marginVertical: 5,
-    width: 170
+    width: 160
   },
   buttonText: {
     color: '#000',
     fontSize: 16,
-    fontFamily: 'karla'
+    fontFamily: 'karla',
+    width: 100
   },
   expenseInput: {
     margin: null,
@@ -404,19 +488,19 @@ const styles = StyleSheet.create({
     fontFamily: 'karla'
   },
   addButton: {
-    backgroundColor: '#ccf0fa',
+    width: 30,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 12.5,
-    margin: 10,
-    marginTop: 0,
-    marginBottom: 10,
-    borderRadius: 10
+    backgroundColor: '#ccf0fa',
+    borderRadius: 15,
+    paddingLeft: 1
   },
   dropdownStyle: {
     borderRadius: 5,
     backgroundColor: '#ccf0fa',
-    elevation: 0
+    elevation: 0,
+    width: 135
     // padding: 2
   },
   descriptionInput: {
