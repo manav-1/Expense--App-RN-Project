@@ -33,13 +33,25 @@ const source = {
   uri: 'https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80'
 };
 
+try {
+  // GoogleSignin.configure({
+  //   webClientId:
+  //     '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com'
+  // });
+  GoogleSignin.configure({
+    webClientId:
+      '298744699635-6phjq1vn1f97g4buqjhb1s1jfb9ta9oh.apps.googleusercontent.com'
+  });
+  // eslint-disable-next-line no-empty
+} catch (error) {}
+
 const SignupScreen = ({ navigation }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState('');
 
-  const [email, setEmail] = React.useState('manav81101@gmail.com');
-  const [password, setPassword] = React.useState('abcdef1@');
-  const [name, setName] = React.useState('Manav');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [name, setName] = React.useState('');
 
   React.useEffect(() => {
     (() => {
