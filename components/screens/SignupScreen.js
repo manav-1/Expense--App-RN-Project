@@ -11,6 +11,7 @@ import { Snackbar } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line no-unused-vars
 import Img from '../../assets/abstract-6.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Styled Components
@@ -22,6 +23,7 @@ import {
   ButtonText,
   Login,
   LoginContainer,
+  // eslint-disable-next-line no-unused-vars
   BgImage,
   SignText,
   RowContainer,
@@ -119,10 +121,10 @@ const SignupScreen = ({ navigation }) => {
           }
         ]}
       >
-        <BgImage
+        {/* <BgImage
           style={{ transform: [{ rotate: '5deg' }, { scale: 1.2 }] }}
           source={Img}
-        />
+        /> */}
         <MainContainer>
           <Title>SignUp Here</Title>
           <Input

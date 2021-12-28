@@ -12,6 +12,7 @@ import auth from '@react-native-firebase/auth';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line no-unused-vars
 import Img from '../../assets/abstract-mobile-payment.png';
 
 // Styled Components
@@ -23,6 +24,7 @@ import {
   ButtonText,
   Login,
   LoginContainer,
+  // eslint-disable-next-line no-unused-vars
   BgImage,
   SignText,
   RowContainer,
@@ -35,17 +37,19 @@ const source = {
   uri: 'https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80'
 };
 try {
-  // GoogleSignin.configure({
-  //   webClientId:
-  //     '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com'
-  // });
   GoogleSignin.configure({
     webClientId:
-      '298744699635-6phjq1vn1f97g4buqjhb1s1jfb9ta9oh.apps.googleusercontent.com'
+      '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com'
   });
+
+  // GoogleSignin.configure({
+  //   webClientId:
+  //     '298744699635-6phjq1vn1f97g4buqjhb1s1jfb9ta9oh.apps.googleusercontent.com'
+  // });
+
   // eslint-disable-next-line no-empty
 } catch (error) {
-  
+  console.log(error);
 }
 
 const LoginScreen = ({ navigation }) => {
@@ -93,11 +97,13 @@ const LoginScreen = ({ navigation }) => {
             }
           })
           .catch((err) => {
+            console.log(err);
             setSnackbarVisible(true);
             setSnackbarText(err.message);
           });
       })
       .catch((err) => {
+        console.log(err);
         setSnackbarVisible(true);
         setSnackbarText(err.message);
       });
@@ -159,10 +165,10 @@ const LoginScreen = ({ navigation }) => {
           }
         ]}
       >
-        <BgImage
+        {/* <BgImage
           style={{ transform: [{ rotate: '-5deg' }, { scale: 1.2 }] }}
           source={Img}
-        />
+        /> */}
         <MainContainer>
           <Title>Login Here</Title>
           <Input
