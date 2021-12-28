@@ -249,7 +249,7 @@ const Expenses = ({ navigation }) => {
                   marginTop: 20
                 }}
               >
-                <View>
+                <View style={{ width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Expense Value
                   </Text>
@@ -262,7 +262,7 @@ const Expenses = ({ navigation }) => {
                     placeholderTextColor="#fff5"
                   />
                 </View>
-                <View>
+                <View style={{ width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Expense Description
                   </Text>
@@ -277,7 +277,7 @@ const Expenses = ({ navigation }) => {
                     placeholderTextColor="#fff5"
                   />
                 </View>
-                <View style={{ padding: 10 }}>
+                <View style={{ padding: 10, width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Expense Type
                   </Text>
@@ -298,7 +298,7 @@ const Expenses = ({ navigation }) => {
                   />
                 </View>
 
-                <View style={{ padding: 10 }}>
+                <View style={{ padding: 10, width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Expense Way
                   </Text>
@@ -325,7 +325,7 @@ const Expenses = ({ navigation }) => {
                     }
                   />
                 </View>
-                <View style={{ padding: 10 }}>
+                <View style={{ padding: 10, width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Date
                   </Text>
@@ -342,21 +342,6 @@ const Expenses = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
 
-                {/* <DatePicker
-                  modal
-                  open={open}
-                  date={expense.date}
-                  mode="date"
-                  androidVariant="iosClone"
-                  title="Select Completion Date"
-                  onConfirm={(date) => {
-                    setOpen(false);
-                    setExpense({ ...expense, date: date });
-                  }}
-                  onCancel={() => {
-                    setOpen(false);
-                  }}
-                /> */}
                 <DatePicker
                   isVisible={open}
                   mode={'single'}
