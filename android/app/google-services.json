@@ -21,6 +21,14 @@
         }
       },
       {
+        "client_id": "298744699635-6phjq1vn1f97g4buqjhb1s1jfb9ta9oh.apps.googleusercontent.com",
+        "client_type": 1,
+        "android_info": {
+          "package_name": "com.expressbarenativeproject",
+          "certificate_hash": "6a1b8ad096c2c68006a370a239760e0a1f91f003"
+        }
+      },
+      {
         "client_id": "298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com",
         "client_type": 3
       }
