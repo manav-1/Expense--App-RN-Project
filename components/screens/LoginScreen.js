@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+// eslint-disable-next-line no-unused-vars
 import Img from '../../assets/abstract-mobile-payment.png';
 
 // Styled Components
