@@ -32,7 +32,15 @@ const CustomExpense = ({ expense, deleteItem, editItem }) => {
     );
 
   return (
-    <View style={styles.mainContainer}>
+    <View
+      style={[
+        styles.mainContainer,
+        {
+          backgroundColor: expense.type === 'Debit' ? '#C46e5c88' : '#A6CF9855',
+          borderColor: expense.type === 'Debit' ? '#DB7A67' : '#709E60',
+        },
+      ]}
+    >
       <View style={{ alignItems: 'center' }}>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Text numberOfLines={1} style={styles.expenseName}>
@@ -44,7 +52,7 @@ const CustomExpense = ({ expense, deleteItem, editItem }) => {
         <View style={{ flexDirection: 'row', marginVertical: 10 }}>
           <Chip
             mode="outlined"
-            style={styles.chipStyle}
+            style={[styles.chipStyle]}
             icon={() => getExpenseType(expense.type)}
           >
             <Text style={styles.chipText}>{expense.type}</Text>
@@ -82,17 +90,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'karla',
-    color: '#fff'
+    color: '#fff',
   },
   money: {
     fontSize: 15,
     fontFamily: 'karla',
-    color: '#fff'
+    color: '#fff',
   },
   moneyContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   mainContainer: {
     // flexDirection: 'row',
@@ -103,33 +111,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 30,
     width: 170,
-    borderWidth: 1,
+    borderWidth: 1.2,
     borderColor: '#e1f8ff',
     backgroundColor: '#1e1e2d',
-    borderRadius: 15
+    borderRadius: 15,
   },
   chipStyle: {
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 1,
-    backgroundColor: '#e1f7ff'
+    backgroundColor: '#e1f7ff',
   },
   chipText: {
     fontSize: 9,
-    color: '#000'
+    color: '#000',
   },
   deleteButton: {
     position: 'absolute',
     top: 5,
-    right: 5
-  }
+    right: 5,
+  },
 });
 
 CustomExpense.propTypes = {
   expense: PropTypes.object.isRequired,
   deleteItem: PropTypes.func,
-  editItem: PropTypes.func
+  editItem: PropTypes.func,
 };
 
 export default CustomExpense;

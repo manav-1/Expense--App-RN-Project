@@ -6,13 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  FlatList
+  FlatList,
 } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {
   GradientContainer,
   PaddedContainer,
-  ExpenseInput
+  ExpenseInput,
 } from '../customComponents/styledComponents';
 import PropTypes from 'prop-types';
 import { Snackbar, ActivityIndicator, ProgressBar } from 'react-native-paper';
@@ -32,7 +32,7 @@ const Expenses = ({ navigation }) => {
     value: ['200', '400', '600', '800', '1000'],
     description: ['Food', 'Clothes', 'Transport', 'Entertainment', 'Others'],
     type: ['Credit', 'Debit'],
-    way: ['Cash', 'Card', 'Bank Transfer', 'UPI', 'Cheque', 'Net Banking']
+    way: ['Cash', 'Card', 'Bank Transfer', 'UPI', 'Cheque', 'Net Banking'],
   };
   const [expenses, setExpenses] = React.useState([]);
   const [user, setUser] = React.useState(null);
@@ -44,14 +44,14 @@ const Expenses = ({ navigation }) => {
     description: sample(sampleValues.description),
     type: sample(sampleValues.type),
     way: sample(sampleValues.way),
-    date: new Date()
+    date: new Date(),
   });
   const [showMore, setShowMore] = React.useState(false);
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [expensesToShow, setExpensesToShow] = React.useState(
-    expenses.sort((a, b) => new Date(a.date) - new Date(b.date)).reverse()
+    expenses.sort((a, b) => new Date(a.date) - new Date(b.date)).reverse(),
   );
   //sorted by date
   const [open, setOpen] = React.useState(false);
@@ -117,7 +117,7 @@ const Expenses = ({ navigation }) => {
       type: Yup.string().required('Please select an expense type'),
       way: Yup.string().required('Please select an expense way'),
       description: Yup.string().required('Please enter a description'),
-      date: Yup.date().required('Please enter a date')
+      date: Yup.date().required('Please enter a date'),
     });
     validationSchema
       .validate(expense)
@@ -129,7 +129,7 @@ const Expenses = ({ navigation }) => {
           description: sample(sampleValues.description),
           type: sample(sampleValues.type),
           way: sample(sampleValues.way),
-          date: new Date()
+          date: new Date(),
         });
         setEditable(false);
         setEditKey(null);
@@ -148,7 +148,7 @@ const Expenses = ({ navigation }) => {
       description: expense.description,
       type: expense.type,
       way: expense.way,
-      date: new Date(expense.date)
+      date: new Date(expense.date),
     });
     setEditable(true);
     setEditKey(expense.key);
@@ -246,7 +246,7 @@ const Expenses = ({ navigation }) => {
                   justifyContent: 'space-around',
                   alignItems: 'center',
                   flexWrap: 'wrap',
-                  marginTop: 20
+                  marginTop: 20,
                 }}
               >
                 <View style={{ width: '45%' }}>
@@ -277,7 +277,7 @@ const Expenses = ({ navigation }) => {
                     placeholderTextColor="#fff5"
                   />
                 </View>
-                <View style={{ padding: 10, width: '45%' }}>
+                <View style={{ width: '45%', marginTop: 20 }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Expense Type
                   </Text>
@@ -298,7 +298,7 @@ const Expenses = ({ navigation }) => {
                   />
                 </View>
 
-                <View style={{ padding: 10, width: '45%' }}>
+                <View style={{ width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Expense Way
                   </Text>
@@ -314,7 +314,7 @@ const Expenses = ({ navigation }) => {
                       'Bank Transfer',
                       'UPI',
                       'Cheque',
-                      'Net Banking'
+                      'Net Banking',
                     ]}
                     dropdownStyle={styles.dropdownStyle}
                     buttonStyle={styles.button}
@@ -325,14 +325,14 @@ const Expenses = ({ navigation }) => {
                     }
                   />
                 </View>
-                <View style={{ padding: 10, width: '45%' }}>
+                <View style={{ width: '45%' }}>
                   <Text style={{ color: '#fff', fontFamily: 'karla' }}>
                     Date
                   </Text>
                   <TouchableOpacity
                     style={[
                       styles.button,
-                      { justifyContent: 'center', alignItems: 'center' }
+                      { justifyContent: 'center', alignItems: 'center' },
                     ]}
                     onPress={() => setOpen(true)}
                   >
@@ -354,14 +354,16 @@ const Expenses = ({ navigation }) => {
                   }}
                 />
               </View>
-              <View style={{ position: 'absolute', right: 5, top: 5 }}>
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={handleNewExpense}
-                >
-                  <Ionicons name="add" color="#000" size={25}></Ionicons>
-                </TouchableOpacity>
-              </View>
+
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={handleNewExpense}
+              >
+                <Text>
+                  <Ionicons name="save-outline" color="#000" size={14} />
+                  &nbsp;Save
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : null}
           {values == 'array' && expensesToShow.length > 0 ? (
@@ -392,7 +394,7 @@ const Expenses = ({ navigation }) => {
           <TouchableOpacity
             style={{
               alignSelf: 'flex-end',
-              marginBottom: 15
+              marginBottom: 15,
             }}
             onPress={() => setShowMore(!showMore)}
           >
@@ -434,13 +436,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccf0fa',
     borderRadius: 10,
     marginVertical: 5,
-    width: 160
+    width: 160,
   },
   buttonText: {
     color: '#000',
     fontSize: 16,
     fontFamily: 'karla',
-    width: 100
+    width: 100,
   },
   expenseInput: {
     margin: null,
@@ -448,27 +450,28 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#000',
     color: '#ccf0fa',
-    borderRadius: 1
+    borderRadius: 1,
   },
   addButtonText: {
     fontSize: 18,
     color: '#000',
-    fontFamily: 'karla'
+    fontFamily: 'karla',
   },
   addButton: {
-    width: 30,
-    height: 30,
+    width: 80,
+    height: 35,
+    alignSelf: 'flex-end',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ccf0fa',
-    borderRadius: 15,
-    paddingLeft: 1
+    borderRadius: 5,
+    marginVertical: 10,
   },
   dropdownStyle: {
     borderRadius: 5,
     backgroundColor: '#ccf0fa',
     elevation: 0,
-    width: 135
+    width: 135,
     // padding: 2
   },
   descriptionInput: {
@@ -477,43 +480,43 @@ const styles = StyleSheet.create({
     borderBottomColor: '#000',
     borderRadius: 1,
     color: '#ccf0fa',
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   accordionButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   accordionTitle: {
     color: '#fff',
     fontFamily: 'karla',
     fontSize: 20,
-    marginBottom: 10
+    marginBottom: 10,
   },
   accordionExpenseContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   accordionContainer: {
-    marginVertical: 20
+    marginVertical: 20,
   },
   chip: {
     marginHorizontal: 8,
-    marginBottom: 10
+    marginBottom: 10,
   },
   tabBarTitle: {
     fontSize: 25,
     padding: 10,
     margin: 5,
     color: '#fff',
-    fontFamily: 'karla'
+    fontFamily: 'karla',
   },
   tabStyles: {
     // borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#181824'
+    backgroundColor: '#181824',
   },
   logoutButton: {
     marginRight: 10,
@@ -523,8 +526,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: '#494c59',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 Expenses.propTypes = {
@@ -533,7 +536,7 @@ Expenses.propTypes = {
   setVisible: PropTypes.func,
   expenses: PropTypes.array,
   deleteExpenses: PropTypes.func,
-  addExpenses: PropTypes.func
+  addExpenses: PropTypes.func,
 };
 
 export default Expenses;

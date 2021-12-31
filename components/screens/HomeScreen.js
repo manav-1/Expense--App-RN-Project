@@ -4,7 +4,7 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CustomExpense from '../customComponents/CustomExpense';
@@ -14,7 +14,7 @@ import {
   GradientContainer,
   PaddedContainer,
   Title,
-  CenteredKarlaText
+  CenteredKarlaText,
 } from '../customComponents/styledComponents';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -53,8 +53,9 @@ const HomeScreen = ({ navigation }) => {
           }
           setExpenses(
             expenses.filter(
-              (item) => new Date(item.date).getMonth() === new Date().getMonth()
-            )
+              (item) =>
+                new Date(item.date).getMonth() === new Date().getMonth(),
+            ),
           );
         } else {
           setExpenses([]);
@@ -73,14 +74,14 @@ const HomeScreen = ({ navigation }) => {
   const groupByDates = () => {
     const groupedByDate = groupBy(
       expenses.filter((expense) => expense.type === 'Debit'),
-      'date'
+      'date',
     );
     let obj = {};
     Object.keys(groupedByDate).forEach((key) => {
       obj[key] = Number(
         groupedByDate[key]
           .reduce((prev, cur) => Number(prev) + Number(cur.value), 0)
-          .toFixed(2)
+          .toFixed(2),
       );
     });
     if (Object.keys(obj).length > 7) {
@@ -136,11 +137,17 @@ const HomeScreen = ({ navigation }) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginHorizontal: 20
+              marginHorizontal: 20,
             }}
           >
             <View>
-              <CenteredKarlaText style={{ fontFamily: 'karlaMedium' }}>
+              <CenteredKarlaText
+                style={{
+                  fontFamily: 'poppinsBold',
+                  fontSize: 12,
+                  marginBottom: -5,
+                }}
+              >
                 Credit
               </CenteredKarlaText>
               <CenteredKarlaText>
@@ -152,7 +159,13 @@ const HomeScreen = ({ navigation }) => {
               </CenteredKarlaText>
             </View>
             <View>
-              <CenteredKarlaText style={{ fontFamily: 'karlaMedium' }}>
+              <CenteredKarlaText
+                style={{
+                  fontFamily: 'poppinsBold',
+                  fontSize: 12,
+                  marginBottom: -5,
+                }}
+              >
                 Debit
               </CenteredKarlaText>
               <CenteredKarlaText>
@@ -178,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             paddingHorizontal: 10,
-            paddingVertical: 5
+            paddingVertical: 5,
           }}
         >
           <Text
@@ -189,8 +202,8 @@ const HomeScreen = ({ navigation }) => {
                 fontWeight: '600',
                 fontFamily: 'karla',
                 fontSize: 18,
-                color: '#fff'
-              }
+                color: '#fff',
+              },
             ]}
           >
             Recent Expenses
@@ -203,8 +216,8 @@ const HomeScreen = ({ navigation }) => {
                   textAlign: 'left',
                   fontWeight: '600',
                   fontFamily: 'inter',
-                  fontSize: 16
-                }
+                  fontSize: 16,
+                },
               ]}
             >
               See All
@@ -229,7 +242,7 @@ const HomeScreen = ({ navigation }) => {
 };
 HomeScreen.propTypes = {
   navigation: PropTypes.object,
-  expenses: PropTypes.array
+  expenses: PropTypes.array,
 };
 export default HomeScreen;
 
@@ -237,21 +250,21 @@ const styles = StyleSheet.create({
   header: {
     color: '#000',
     fontSize: 30,
-    fontFamily: 'readex',
-    textAlign: 'left'
+    fontFamily: 'poppins',
+    textAlign: 'left',
   },
   light: {
     textAlign: 'center',
-    fontFamily: 'karla',
+    fontFamily: 'poppins',
     fontSize: 16,
-    color: '#000'
+    color: '#000',
   },
   money: {
     color: '#000',
     fontSize: 45,
     fontFamily: 'readex',
     marginVertical: 5,
-    letterSpacing: 0.1
+    letterSpacing: 0.1,
   },
   oval: {
     width: 80,
@@ -262,7 +275,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 100,
     top: 5,
-    borderColor: '#8f106033'
+    borderColor: '#8f106033',
   },
   heading: {
     fontFamily: 'karla',
@@ -271,20 +284,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#fff'
+    color: '#fff',
   },
   tabBarTitle: {
-    fontSize: 25,
+    fontSize: 23,
     padding: 10,
     color: '#fff',
-    fontFamily: 'karla'
+    fontFamily: 'poppins',
   },
   tabStyles: {
     // borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#181824'
+    backgroundColor: '#181824',
   },
   logoutButton: {
     marginRight: 10,
@@ -294,6 +307,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: '#494c59',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });

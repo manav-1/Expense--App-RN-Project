@@ -117,7 +117,7 @@ const SignupScreen = ({ navigation }) => {
           {
             backgroundColor: '#000D',
             alignItems: 'center',
-            justifyContent: 'flex-start'
+            justifyContent: 'center'
           }
         ]}
       >

@@ -7,7 +7,7 @@ import { Text as TextSVG } from 'react-native-svg';
 
 const LineScreen = (props) => {
   const values = Object.entries(props.data).sort(
-    (a, b) => new Date(a[0]) - new Date(b[0])
+    (a, b) => new Date(a[0]) - new Date(b[0]),
   );
   const dateList = values.map((item) => item[0]);
   const priceList = values.map((item) => item[1]);
@@ -20,19 +20,19 @@ const LineScreen = (props) => {
           .split(' ')
           .slice(1, 3)
           .reverse()
-          .join(' ')
+          .join(' '),
       ),
-      ''
+      '',
     ],
     datasets: [
       {
         data: [
           0,
           ...priceList,
-          Math.min(...priceList) > 0 ? 0 : Math.min(...priceList)
-        ]
-      }
-    ]
+          Math.min(...priceList) > 0 ? 0 : Math.min(...priceList),
+        ],
+      },
+    ],
   };
   const screenWidth = Dimensions.get('screen').width - 20;
   const chartConfig = {
@@ -45,8 +45,8 @@ const LineScreen = (props) => {
     useShadowColorFromDataset: true, // optional
     propsForBackgroundLines: {
       strokeWidth: 1.5, // optional
-      strokeDasharray: '' // solid background lines with no dashes
-    }
+      strokeDasharray: '', // solid background lines with no dashes
+    },
   };
   return (
     <LinearGradient
@@ -56,7 +56,7 @@ const LineScreen = (props) => {
       <View
         style={{
           height: 230,
-          width: '100%'
+          width: '100%',
         }}
       >
         <Text style={styles.expenseText}>Expense Value</Text>
@@ -66,7 +66,7 @@ const LineScreen = (props) => {
             borderRadius: 10,
             position: 'absolute',
             top: 20,
-            left: -30
+            left: -30,
           }}
           data={data}
           width={screenWidth}
@@ -85,7 +85,7 @@ const LineScreen = (props) => {
                 y={y - 5}
                 fill="black"
                 fontSize={12}
-                fontWeight="normal"
+                fontFamily="karla"
               >
                 ₹ {indexData}
               </TextSVG>
@@ -101,7 +101,7 @@ const LineScreen = (props) => {
 export default LineScreen;
 LineScreen.propTypes = {
   props: PropTypes.object,
-  data: PropTypes.object
+  data: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
@@ -111,13 +111,13 @@ const styles = StyleSheet.create({
     top: '45%',
     left: '-7%',
     fontSize: 12,
-    fontFamily: 'poppinsBold'
+    fontFamily: 'poppinsBold',
   },
   dateText: {
     position: 'absolute',
     top: '92%',
     left: '48%',
     fontFamily: 'poppinsBold',
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 });

@@ -6,9 +6,9 @@ const MainContainer = styled.View`
   background: #fff6;
   width: ${Dimensions.get('window').width * 0.9}px;
   border-radius: 10px;
-  padding: 10px;
-  position: absolute;
-  top: 50px;
+  padding: 20px 10px;
+  ${'' /* position: absolute; */}
+  ${'' /* top: 50px; */}
   text-align: center;
 `;
 const Title = styled.Text`
@@ -169,5 +169,5 @@ export {
   PaddedViewContainer,
   PaddedContainer,
   ExpenseInput,
-  CenteredKarlaText
+  CenteredKarlaText,
 };

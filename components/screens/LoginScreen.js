@@ -3,7 +3,7 @@ import {
   View,
   ImageBackground,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Snackbar } from 'react-native-paper';
@@ -13,6 +13,8 @@ import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import Img from '../../assets/abstract-mobile-payment.png';
 
 // Styled Components
@@ -28,29 +30,20 @@ import {
   BgImage,
   SignText,
   RowContainer,
-  IconText
+  IconText,
 } from '../customComponents/styledComponents';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 const source = {
-  uri: 'https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80'
+  uri: 'https://images.unsplash.com/photo-1621264448270-9ef00e88a935?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=657&q=80',
 };
 try {
   GoogleSignin.configure({
     webClientId:
-      '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com'
+      '298744699635-m0jtnj44asu5qrluccp5oi9quaemrrep.apps.googleusercontent.com',
   });
 
-  // GoogleSignin.configure({
-  //   webClientId:
-  //     '298744699635-6phjq1vn1f97g4buqjhb1s1jfb9ta9oh.apps.googleusercontent.com'
-  // });
-
   // eslint-disable-next-line no-empty
-} catch (error) {
-  console.log(error);
-}
+} catch (error) {}
 
 const LoginScreen = ({ navigation }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
@@ -76,7 +69,7 @@ const LoginScreen = ({ navigation }) => {
       password: Yup.string()
         .min(6, 'Please Enter more than  6 letters')
         .max(25)
-        .required('Please Enter your password')
+        .required('Please Enter your password'),
     });
     validationSchema
       .validate({ email, password })
@@ -120,14 +113,14 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       setSnackbarVisible(true);
       console.log(error);
-      setSnackbarText(error.message);
+      setSnackbarText('Under Development, Please try logging in with Email');
     }
   };
 
   const handleFacebookLogin = async () => {
     const result = await LoginManager.logInWithPermissions([
       'public_profile',
-      'email'
+      'email',
     ]);
 
     if (result.isCancelled) {
@@ -143,7 +136,7 @@ const LoginScreen = ({ navigation }) => {
 
     // Create a Firebase credential with the AccessToken
     const facebookCredential = auth.FacebookAuthProvider.credential(
-      data.accessToken
+      data.accessToken,
     );
 
     // Sign-in the user with the credential
@@ -161,8 +154,8 @@ const LoginScreen = ({ navigation }) => {
           {
             backgroundColor: '#000D',
             alignItems: 'center',
-            justifyContent: 'flex-start'
-          }
+            justifyContent: 'center',
+          },
         ]}
       >
         {/* <BgImage
@@ -218,7 +211,7 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 LoginScreen.propTypes = {
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
 };
 
 export default LoginScreen;
